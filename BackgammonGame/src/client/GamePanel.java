@@ -15,6 +15,23 @@ public class GamePanel extends javax.swing.JPanel {
     private game.BackgammonBoard board = new game.BackgammonBoard();
     private javax.swing.JLabel selectedLabel = null;
     private int selectedPointIndex = -1;
+    private boolean diceRolled = false;
+
+    
+    // ألوان المثلثات (24 مثلث)
+private String[] triColors = {
+    "red","white","red","white","red","white",   // 1-6 تحت يمين
+    "red","white","red","white","red","white",   // 7-12 تحت يسار
+    "red","white","red","white","red","white",   // 13-18 فوق يسار
+    "red","white","red","white","red","white"    // 19-24 فوق يمين
+};
+// هل المثلث معكوس؟
+private boolean[] flippedPoints = {
+    true,true,true,true,true,true,     // 1-6 تحت
+    true,true,true,true,true,true,     // 7-12 تحت
+    false,false,false,false,false,false, // 13-18 فوق
+    false,false,false,false,false,false  // 19-24 فوق
+};
 
     /**
      * Creates new form GamePanel
@@ -496,9 +513,10 @@ public class GamePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        game.BackgammonBoard board = new game.BackgammonBoard();
-int[] dice = board.rollDice();
-jLabel51.setText(" " + dice[0] + " - " + dice[1]);
+        currentDice = board.rollDice();
+        diceRolled = true;
+        
+    jLabel51.setText(" " + currentDice[0] + " - " + currentDice[1]);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void point1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point1MouseClicked
@@ -683,20 +701,110 @@ jLabel51.setText(" " + dice[0] + " - " + dice[1]);
 
 public void pointClicked(javax.swing.JLabel label, int pointIndex) {
     
-    // لو مفيش مثلث محدد — حدد هذا المثلث
-    if (selectedLabel == null) {
-        selectedLabel = label;
-        selectedPointIndex = pointIndex;
-        // لون المثلث عشان يبان محدد
-        label.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
+    // شيل التحديد القديم
+    if (selectedLabel != null) {
+        selectedLabel.setBorder(null);
+    }
+    
+    // لو ضغط على نفس المثلث → شيل التحديد
+    if (selectedLabel == label) {
+        selectedLabel = null;
+        selectedPointIndex = -1;
         return;
     }
     
-    // لو في مثلث محدد — حاول تتحرك
-    // شيل التحديد
-    selectedLabel.setBorder(null);
+    // لو في مثلث محدد قبل → هذا هو الهدف
+    if (selectedLabel != null && selectedPointIndex != -1) {
+        
+        if (!diceRolled) {
+    javax.swing.JOptionPane.showMessageDialog(this, "Roll the dice first!");
     selectedLabel = null;
     selectedPointIndex = -1;
+    return;
+}
+        
+        int from = selectedPointIndex - 1; // index في الـ array
+        int to = pointIndex - 1;
+        int player = board.getCurrentPlayer();
+        
+        // تحقق إن اللاعب يحرك قطعته هو مش قطعة الخصم
+if (player == 1 && board.getPoint(from) <= 0) {
+    javax.swing.JOptionPane.showMessageDialog(this, "It's White's Turn! ⚪ Move your white pieces!");
+    selectedLabel = null;
+    selectedPointIndex = -1;
+    return;
+}
+if (player == 2 && board.getPoint(from) >= 0) {
+    javax.swing.JOptionPane.showMessageDialog(this, "It's Black's Turn! ⚫ Move your black pieces!");
+    selectedLabel = null;
+    selectedPointIndex = -1;
+    return;
+}
+        
+        
+        
+        // تحقق هل الحركة صح
+        if (board.isValidMove(from, to, player)) {
+    int diff;
+    if (player == 1) {
+        diff = from - to;
+    } else {
+        diff = to - from;
+    }
+    if (Math.abs(diff) != currentDice[0] && Math.abs(diff) != currentDice[1]) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Use dice numbers: " + currentDice[0] + " or " + currentDice[1]);
+        selectedLabel = null;
+        selectedPointIndex = -1;
+        return;
+    }
+            board.movePiece(from, to, player);
+            
+            // حدّث صورة المثلث الأصلي
+            int fromPieces = Math.abs(board.getPoint(from));
+            String fromPieceColor = board.getPoint(from) > 0 ? "white" : "black";
+            updatePointImage(selectedLabel, triColors[from], fromPieces == 0 ? "white" : fromPieceColor, fromPieces, flippedPoints[from]);
+            
+            // حدّث صورة المثلث الهدف
+            int toPieces = Math.abs(board.getPoint(to));
+            String toPieceColor = board.getPoint(to) > 0 ? "white" : "black";
+            updatePointImage(label, triColors[to], toPieces == 0 ? "white" : toPieceColor, toPieces, flippedPoints[to]);
+            
+            board.switchPlayer();
+            diceRolled = false;
+            
+            java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+if (window instanceof javax.swing.JFrame) {
+    ((javax.swing.JFrame) window).setTitle(
+        board.getCurrentPlayer() == 1 ? 
+        "Backgammon - White's Turn ⚪" : 
+        "Backgammon - Black's Turn ⚫"
+    );
+}
+    
+        }
+        
+        selectedLabel = null;
+        selectedPointIndex = -1;
+        return;
+    }
+    
+    // حدد المثلث الجديد
+    selectedLabel = label;
+    selectedPointIndex = pointIndex;
+    label.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
+}
+
+public void updatePointImage(javax.swing.JLabel label, String triColor, String pieceColor, int pieces, boolean flipped) {
+    String flippedStr = flipped ? "_flipped" : "";
+    String path = "/images/triangle_" + triColor + "_" + pieceColor + "_" + pieces + flippedStr + ".png";
+    java.net.URL imgURL = getClass().getResource(path);
+    if (imgURL != null) {
+        javax.swing.ImageIcon icon = new javax.swing.ImageIcon(imgURL);
+java.awt.Image img = icon.getImage().getScaledInstance(label.getWidth(), label.getHeight(), java.awt.Image.SCALE_SMOOTH);
+label.setIcon(new javax.swing.ImageIcon(img));
+    } else {
+        System.out.println("IMAGE NOT FOUND: " + path);
+    }
 }
 
 
