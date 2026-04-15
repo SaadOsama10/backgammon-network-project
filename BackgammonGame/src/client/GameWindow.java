@@ -25,7 +25,8 @@ public class GameWindow extends javax.swing.JFrame {
     getContentPane().setLayout(new java.awt.BorderLayout());
     getContentPane().add(new BoardPanel(), java.awt.BorderLayout.CENTER);
     
-    setSize(1000, 700);
+    setSize(1000, 730);
+    setLocationRelativeTo(null);
     setVisible(true);
     }
 
