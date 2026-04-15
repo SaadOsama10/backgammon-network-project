@@ -9,6 +9,10 @@ package client;
  * @author saadrady
  */
 public class GamePanel extends javax.swing.JPanel {
+    
+    private int selectedPoint = -1; // المثلث المختار
+    private int[] currentDice = {0, 0}; // النرد الحالي
+    private game.BackgammonBoard board = new game.BackgammonBoard();
 
     /**
      * Creates new form GamePanel
@@ -28,32 +32,32 @@ public class GamePanel extends javax.swing.JPanel {
 
         jLabel7 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
-        jLabel18 = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
-        jLabel21 = new javax.swing.JLabel();
-        jLabel22 = new javax.swing.JLabel();
-        jLabel23 = new javax.swing.JLabel();
-        jLabel24 = new javax.swing.JLabel();
+        point19 = new javax.swing.JLabel();
+        point20 = new javax.swing.JLabel();
+        point21 = new javax.swing.JLabel();
+        point22 = new javax.swing.JLabel();
+        point23 = new javax.swing.JLabel();
+        point24 = new javax.swing.JLabel();
+        point6 = new javax.swing.JLabel();
+        point5 = new javax.swing.JLabel();
+        point4 = new javax.swing.JLabel();
+        point3 = new javax.swing.JLabel();
+        point2 = new javax.swing.JLabel();
+        point1 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel25 = new javax.swing.JLabel();
+        point14 = new javax.swing.JLabel();
+        point15 = new javax.swing.JLabel();
+        point16 = new javax.swing.JLabel();
+        point17 = new javax.swing.JLabel();
+        point18 = new javax.swing.JLabel();
+        point12 = new javax.swing.JLabel();
+        point11 = new javax.swing.JLabel();
+        point10 = new javax.swing.JLabel();
+        point9 = new javax.swing.JLabel();
+        point8 = new javax.swing.JLabel();
+        point7 = new javax.swing.JLabel();
+        point13 = new javax.swing.JLabel();
         jLabel28 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
         jLabel29 = new javax.swing.JLabel();
@@ -94,53 +98,53 @@ public class GamePanel extends javax.swing.JPanel {
         jPanel3.setBackground(new java.awt.Color(46, 125, 50));
         jPanel3.setLayout(null);
 
-        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_black_5.png"))); // NOI18N
-        jPanel3.add(jLabel13);
-        jLabel13.setBounds(5, 0, 70, 250);
+        point19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_black_5.png"))); // NOI18N
+        jPanel3.add(point19);
+        point19.setBounds(5, 0, 70, 250);
 
-        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
-        jPanel3.add(jLabel14);
-        jLabel14.setBounds(78, 0, 70, 250);
+        point20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
+        jPanel3.add(point20);
+        point20.setBounds(78, 0, 70, 250);
 
-        jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0.png"))); // NOI18N
-        jPanel3.add(jLabel16);
-        jLabel16.setBounds(151, 0, 70, 250);
+        point21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0.png"))); // NOI18N
+        jPanel3.add(point21);
+        point21.setBounds(151, 0, 70, 250);
 
-        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
-        jPanel3.add(jLabel15);
-        jLabel15.setBounds(224, 0, 70, 250);
+        point22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
+        jPanel3.add(point22);
+        point22.setBounds(224, 0, 70, 250);
 
-        jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0.png"))); // NOI18N
-        jPanel3.add(jLabel17);
-        jLabel17.setBounds(297, 0, 70, 250);
+        point23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0.png"))); // NOI18N
+        jPanel3.add(point23);
+        point23.setBounds(297, 0, 70, 250);
 
-        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_2.png"))); // NOI18N
-        jPanel3.add(jLabel18);
-        jLabel18.setBounds(370, 0, 70, 250);
+        point24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_2.png"))); // NOI18N
+        jPanel3.add(point24);
+        point24.setBounds(370, 0, 70, 250);
 
-        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_5_flipped.png"))); // NOI18N
-        jPanel3.add(jLabel19);
-        jLabel19.setBounds(5, 410, 70, 250);
+        point6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_5_flipped.png"))); // NOI18N
+        jPanel3.add(point6);
+        point6.setBounds(5, 410, 70, 250);
 
-        jLabel20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
-        jPanel3.add(jLabel20);
-        jLabel20.setBounds(78, 410, 70, 250);
+        point5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
+        jPanel3.add(point5);
+        point5.setBounds(78, 410, 70, 250);
 
-        jLabel21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0_flipped.png"))); // NOI18N
-        jPanel3.add(jLabel21);
-        jLabel21.setBounds(151, 410, 70, 250);
+        point4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0_flipped.png"))); // NOI18N
+        jPanel3.add(point4);
+        point4.setBounds(151, 410, 70, 250);
 
-        jLabel22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
-        jPanel3.add(jLabel22);
-        jLabel22.setBounds(224, 410, 70, 250);
+        point3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
+        jPanel3.add(point3);
+        point3.setBounds(224, 410, 70, 250);
 
-        jLabel23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0_flipped.png"))); // NOI18N
-        jPanel3.add(jLabel23);
-        jLabel23.setBounds(297, 410, 70, 250);
+        point2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0_flipped.png"))); // NOI18N
+        jPanel3.add(point2);
+        point2.setBounds(297, 410, 70, 250);
 
-        jLabel24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_black_2_flipped.png"))); // NOI18N
-        jPanel3.add(jLabel24);
-        jLabel24.setBounds(370, 410, 70, 250);
+        point1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_black_2_flipped.png"))); // NOI18N
+        jPanel3.add(point1);
+        point1.setBounds(370, 410, 70, 250);
 
         add(jPanel3);
         jPanel3.setBounds(530, 20, 455, 660);
@@ -154,53 +158,53 @@ public class GamePanel extends javax.swing.JPanel {
         jPanel1.setBackground(new java.awt.Color(46, 125, 50));
         jPanel1.setLayout(null);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
-        jPanel1.add(jLabel1);
-        jLabel1.setBounds(78, 0, 70, 250);
+        point14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
+        jPanel1.add(point14);
+        point14.setBounds(78, 0, 70, 250);
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0.png"))); // NOI18N
-        jPanel1.add(jLabel2);
-        jLabel2.setBounds(151, 0, 70, 250);
+        point15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0.png"))); // NOI18N
+        jPanel1.add(point15);
+        point15.setBounds(151, 0, 70, 250);
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
-        jPanel1.add(jLabel3);
-        jLabel3.setBounds(224, 0, 70, 250);
+        point16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
+        jPanel1.add(point16);
+        point16.setBounds(224, 0, 70, 250);
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_black_3.png"))); // NOI18N
-        jPanel1.add(jLabel4);
-        jLabel4.setBounds(297, 0, 70, 250);
+        point17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_black_3.png"))); // NOI18N
+        jPanel1.add(point17);
+        point17.setBounds(297, 0, 70, 250);
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
-        jPanel1.add(jLabel5);
-        jLabel5.setBounds(370, 0, 70, 250);
+        point18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
+        jPanel1.add(point18);
+        point18.setBounds(370, 0, 70, 250);
 
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_black_5_flipped.png"))); // NOI18N
-        jPanel1.add(jLabel6);
-        jLabel6.setBounds(5, 410, 70, 250);
+        point12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_black_5_flipped.png"))); // NOI18N
+        jPanel1.add(point12);
+        point12.setBounds(5, 410, 70, 250);
 
-        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
-        jPanel1.add(jLabel8);
-        jLabel8.setBounds(78, 410, 70, 250);
+        point11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
+        jPanel1.add(point11);
+        point11.setBounds(78, 410, 70, 250);
 
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0_flipped.png"))); // NOI18N
-        jPanel1.add(jLabel9);
-        jLabel9.setBounds(151, 410, 70, 250);
+        point10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0_flipped.png"))); // NOI18N
+        jPanel1.add(point10);
+        point10.setBounds(151, 410, 70, 250);
 
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
-        jPanel1.add(jLabel10);
-        jLabel10.setBounds(224, 410, 70, 250);
+        point9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
+        jPanel1.add(point9);
+        point9.setBounds(224, 410, 70, 250);
 
-        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_3_flipped.png"))); // NOI18N
-        jPanel1.add(jLabel11);
-        jLabel11.setBounds(297, 410, 70, 250);
+        point8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_3_flipped.png"))); // NOI18N
+        jPanel1.add(point8);
+        point8.setBounds(297, 410, 70, 250);
 
-        jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
-        jPanel1.add(jLabel12);
-        jLabel12.setBounds(370, 410, 70, 250);
+        point7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
+        jPanel1.add(point7);
+        point7.setBounds(370, 410, 70, 250);
 
-        jLabel25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_5.png"))); // NOI18N
-        jPanel1.add(jLabel25);
-        jLabel25.setBounds(5, 0, 70, 250);
+        point13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_5.png"))); // NOI18N
+        jPanel1.add(point13);
+        point13.setBounds(5, 0, 70, 250);
 
         jLabel28.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         jLabel28.setForeground(new java.awt.Color(255, 215, 0));
@@ -378,29 +382,10 @@ jLabel51.setText(" " + dice[0] + " - " + dice[1]);
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
@@ -411,7 +396,6 @@ jLabel51.setText(" " + dice[0] + " - " + dice[1]);
     private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel39;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel41;
     private javax.swing.JLabel jLabel42;
@@ -422,14 +406,34 @@ jLabel51.setText(" " + dice[0] + " - " + dice[1]);
     private javax.swing.JLabel jLabel47;
     private javax.swing.JLabel jLabel48;
     private javax.swing.JLabel jLabel49;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel51;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JLabel point1;
+    private javax.swing.JLabel point10;
+    private javax.swing.JLabel point11;
+    private javax.swing.JLabel point12;
+    private javax.swing.JLabel point13;
+    private javax.swing.JLabel point14;
+    private javax.swing.JLabel point15;
+    private javax.swing.JLabel point16;
+    private javax.swing.JLabel point17;
+    private javax.swing.JLabel point18;
+    private javax.swing.JLabel point19;
+    private javax.swing.JLabel point2;
+    private javax.swing.JLabel point20;
+    private javax.swing.JLabel point21;
+    private javax.swing.JLabel point22;
+    private javax.swing.JLabel point23;
+    private javax.swing.JLabel point24;
+    private javax.swing.JLabel point3;
+    private javax.swing.JLabel point4;
+    private javax.swing.JLabel point5;
+    private javax.swing.JLabel point6;
+    private javax.swing.JLabel point7;
+    private javax.swing.JLabel point8;
+    private javax.swing.JLabel point9;
     // End of variables declaration//GEN-END:variables
 }
