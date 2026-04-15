@@ -62,6 +62,7 @@ public class BackgammonBoard {
     // هل الحركة صح؟
 public boolean isValidMove(int from, int to, int player) {
     
+    
     // لو عند اللاعب قطعة على البار، لازم يدخلها أول
     if (player == 1 && barPlayer1 > 0) {
         return false;
@@ -78,9 +79,8 @@ public boolean isValidMove(int from, int to, int player) {
     if (player == 1 && points[to] <= -2) return false;
     if (player == 2 && points[to] >= 2)  return false;
     
-    return true; // الحركة صح ✅
+    return true;
 }
-
 // تحريك القطعة
 public void movePiece(int from, int to, int player) {
     
