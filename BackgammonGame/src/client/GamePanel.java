@@ -28,7 +28,6 @@ public class GamePanel extends javax.swing.JPanel {
 
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -40,6 +39,7 @@ public class GamePanel extends javax.swing.JPanel {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
@@ -66,10 +66,6 @@ public class GamePanel extends javax.swing.JPanel {
         jPanel1.setBackground(new java.awt.Color(46, 125, 50));
         jPanel1.setLayout(null);
 
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0.png"))); // NOI18N
-        jPanel1.add(jLabel7);
-        jLabel7.setBounds(5, 0, 70, 250);
-
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
         jPanel1.add(jLabel1);
         jLabel1.setBounds(78, 0, 70, 250);
@@ -82,7 +78,7 @@ public class GamePanel extends javax.swing.JPanel {
         jPanel1.add(jLabel3);
         jLabel3.setBounds(224, 0, 70, 250);
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0.png"))); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_black_3.png"))); // NOI18N
         jPanel1.add(jLabel4);
         jLabel4.setBounds(297, 0, 70, 250);
 
@@ -90,7 +86,7 @@ public class GamePanel extends javax.swing.JPanel {
         jPanel1.add(jLabel5);
         jLabel5.setBounds(370, 0, 70, 250);
 
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0_flipped.png"))); // NOI18N
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_black_5_flipped.png"))); // NOI18N
         jPanel1.add(jLabel6);
         jLabel6.setBounds(5, 410, 70, 250);
 
@@ -106,7 +102,7 @@ public class GamePanel extends javax.swing.JPanel {
         jPanel1.add(jLabel10);
         jLabel10.setBounds(224, 410, 70, 250);
 
-        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0_flipped.png"))); // NOI18N
+        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_3_flipped.png"))); // NOI18N
         jPanel1.add(jLabel11);
         jLabel11.setBounds(297, 410, 70, 250);
 
@@ -114,13 +110,17 @@ public class GamePanel extends javax.swing.JPanel {
         jPanel1.add(jLabel12);
         jLabel12.setBounds(370, 410, 70, 250);
 
+        jLabel25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_5.png"))); // NOI18N
+        jPanel1.add(jLabel25);
+        jLabel25.setBounds(5, 0, 70, 250);
+
         add(jPanel1);
         jPanel1.setBounds(20, 20, 455, 660);
 
         jPanel3.setBackground(new java.awt.Color(46, 125, 50));
         jPanel3.setLayout(null);
 
-        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0.png"))); // NOI18N
+        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_black_5.png"))); // NOI18N
         jPanel3.add(jLabel13);
         jLabel13.setBounds(5, 0, 70, 250);
 
@@ -140,11 +140,11 @@ public class GamePanel extends javax.swing.JPanel {
         jPanel3.add(jLabel17);
         jLabel17.setBounds(297, 0, 70, 250);
 
-        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
+        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_2.png"))); // NOI18N
         jPanel3.add(jLabel18);
         jLabel18.setBounds(370, 0, 70, 250);
 
-        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0_flipped.png"))); // NOI18N
+        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_5_flipped.png"))); // NOI18N
         jPanel3.add(jLabel19);
         jLabel19.setBounds(5, 410, 70, 250);
 
@@ -164,7 +164,7 @@ public class GamePanel extends javax.swing.JPanel {
         jPanel3.add(jLabel23);
         jLabel23.setBounds(297, 410, 70, 250);
 
-        jLabel24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
+        jLabel24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_black_2_flipped.png"))); // NOI18N
         jPanel3.add(jLabel24);
         jLabel24.setBounds(370, 410, 70, 250);
 
@@ -191,11 +191,11 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;

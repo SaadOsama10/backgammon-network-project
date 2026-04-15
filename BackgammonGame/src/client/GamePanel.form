@@ -56,18 +56,6 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="jLabel7">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/client/triangle_red_white_0.png"/>
-            </Property>
-          </Properties>
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="5" y="0" width="70" height="250"/>
-            </Constraint>
-          </Constraints>
-        </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
@@ -107,7 +95,7 @@
         <Component class="javax.swing.JLabel" name="jLabel4">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/client/triangle_red_white_0.png"/>
+              <Image iconType="3" name="/client/triangle_red_black_3.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -131,7 +119,7 @@
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/client/triangle_white_white_0_flipped.png"/>
+              <Image iconType="3" name="/client/triangle_white_black_5_flipped.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -179,7 +167,7 @@
         <Component class="javax.swing.JLabel" name="jLabel11">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/client/triangle_white_white_0_flipped.png"/>
+              <Image iconType="3" name="/client/triangle_white_white_3_flipped.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -197,6 +185,18 @@
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="370" y="410" width="-1" height="-1"/>
+            </Constraint>
+          </Constraints>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel25">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/client/triangle_red_white_5.png"/>
+            </Property>
+          </Properties>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+              <AbsoluteConstraints x="5" y="0" width="-1" height="-1"/>
             </Constraint>
           </Constraints>
         </Component>
@@ -221,7 +221,7 @@
         <Component class="javax.swing.JLabel" name="jLabel13">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/client/triangle_red_white_0.png"/>
+              <Image iconType="3" name="/client/triangle_red_black_5.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -281,7 +281,7 @@
         <Component class="javax.swing.JLabel" name="jLabel18">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/client/triangle_white_white_0.png"/>
+              <Image iconType="3" name="/client/triangle_white_white_2.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -293,7 +293,7 @@
         <Component class="javax.swing.JLabel" name="jLabel19">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/client/triangle_white_white_0_flipped.png"/>
+              <Image iconType="3" name="/client/triangle_white_white_5_flipped.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -353,7 +353,7 @@
         <Component class="javax.swing.JLabel" name="jLabel24">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/client/triangle_red_white_0_flipped.png"/>
+              <Image iconType="3" name="/client/triangle_red_black_2_flipped.png"/>
             </Property>
           </Properties>
           <Constraints>
