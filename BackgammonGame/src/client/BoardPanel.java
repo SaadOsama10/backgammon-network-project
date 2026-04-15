@@ -84,6 +84,8 @@ public class BoardPanel extends javax.swing.JPanel {
     frame.getContentPane().add(new GamePanel());
     frame.revalidate();
     frame.repaint();
+    frame.setTitle("Backgammon - White's Turn ⚪");
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
