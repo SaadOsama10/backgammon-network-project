@@ -38,6 +38,7 @@ private boolean[] flippedPoints = {
      */
     public GamePanel() {
         initComponents();
+        
     }
 
     /**
