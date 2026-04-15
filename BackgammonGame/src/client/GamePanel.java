@@ -40,6 +40,7 @@ public class GamePanel extends javax.swing.JPanel {
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
@@ -53,6 +54,30 @@ public class GamePanel extends javax.swing.JPanel {
         jLabel22 = new javax.swing.JLabel();
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        jLabel27 = new javax.swing.JLabel();
+        jLabel29 = new javax.swing.JLabel();
+        jLabel32 = new javax.swing.JLabel();
+        jLabel30 = new javax.swing.JLabel();
+        jLabel31 = new javax.swing.JLabel();
+        jLabel33 = new javax.swing.JLabel();
+        jLabel34 = new javax.swing.JLabel();
+        jLabel35 = new javax.swing.JLabel();
+        jLabel36 = new javax.swing.JLabel();
+        jLabel37 = new javax.swing.JLabel();
+        jLabel38 = new javax.swing.JLabel();
+        jLabel39 = new javax.swing.JLabel();
+        jLabel40 = new javax.swing.JLabel();
+        jLabel41 = new javax.swing.JLabel();
+        jLabel42 = new javax.swing.JLabel();
+        jLabel43 = new javax.swing.JLabel();
+        jLabel44 = new javax.swing.JLabel();
+        jLabel45 = new javax.swing.JLabel();
+        jLabel46 = new javax.swing.JLabel();
+        jLabel47 = new javax.swing.JLabel();
+        jLabel48 = new javax.swing.JLabel();
+        jLabel49 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(92, 61, 30));
         setToolTipText("255");
@@ -114,6 +139,12 @@ public class GamePanel extends javax.swing.JPanel {
         jPanel1.add(jLabel25);
         jLabel25.setBounds(5, 0, 70, 250);
 
+        jLabel28.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel28.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel28.setText("16");
+        jPanel1.add(jLabel28);
+        jLabel28.setBounds(269, 2, 42, 17);
+
         add(jPanel1);
         jPanel1.setBounds(20, 20, 455, 660);
 
@@ -170,6 +201,151 @@ public class GamePanel extends javax.swing.JPanel {
 
         add(jPanel3);
         jPanel3.setBounds(530, 20, 455, 660);
+
+        jLabel7.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel7.setText("13");
+        add(jLabel7);
+        jLabel7.setBounds(50, 2, 42, 17);
+
+        jLabel26.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel26.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel26.setText("14");
+        add(jLabel26);
+        jLabel26.setBounds(123, 2, 42, 17);
+
+        jLabel27.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel27.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel27.setText("15");
+        add(jLabel27);
+        jLabel27.setBounds(196, 2, 42, 17);
+
+        jLabel29.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel29.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel29.setText("16");
+        add(jLabel29);
+        jLabel29.setBounds(269, 2, 42, 17);
+
+        jLabel32.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel32.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel32.setText("17");
+        add(jLabel32);
+        jLabel32.setBounds(342, 2, 42, 17);
+
+        jLabel30.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel30.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel30.setText("18");
+        add(jLabel30);
+        jLabel30.setBounds(415, 2, 42, 17);
+
+        jLabel31.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel31.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel31.setText("12");
+        add(jLabel31);
+        jLabel31.setBounds(50, 685, 42, 17);
+
+        jLabel33.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel33.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel33.setText("11");
+        add(jLabel33);
+        jLabel33.setBounds(123, 685, 42, 17);
+
+        jLabel34.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel34.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel34.setText("10");
+        add(jLabel34);
+        jLabel34.setBounds(196, 685, 42, 17);
+
+        jLabel35.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel35.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel35.setText("9");
+        add(jLabel35);
+        jLabel35.setBounds(269, 685, 42, 17);
+
+        jLabel36.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel36.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel36.setText("8");
+        jLabel36.setToolTipText("");
+        add(jLabel36);
+        jLabel36.setBounds(342, 685, 42, 17);
+
+        jLabel37.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel37.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel37.setText("7");
+        add(jLabel37);
+        jLabel37.setBounds(415, 685, 42, 17);
+
+        jLabel38.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel38.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel38.setText("6");
+        add(jLabel38);
+        jLabel38.setBounds(565, 685, 42, 17);
+
+        jLabel39.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel39.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel39.setText("5");
+        add(jLabel39);
+        jLabel39.setBounds(638, 685, 42, 17);
+
+        jLabel40.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel40.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel40.setText("4");
+        add(jLabel40);
+        jLabel40.setBounds(711, 685, 42, 17);
+
+        jLabel41.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel41.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel41.setText("3");
+        add(jLabel41);
+        jLabel41.setBounds(784, 685, 42, 17);
+
+        jLabel42.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel42.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel42.setText("2");
+        add(jLabel42);
+        jLabel42.setBounds(857, 685, 42, 17);
+
+        jLabel43.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel43.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel43.setText("1");
+        add(jLabel43);
+        jLabel43.setBounds(930, 685, 42, 17);
+
+        jLabel44.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel44.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel44.setText("24");
+        add(jLabel44);
+        jLabel44.setBounds(930, 2, 42, 17);
+
+        jLabel45.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel45.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel45.setText("23");
+        add(jLabel45);
+        jLabel45.setBounds(857, 2, 42, 17);
+
+        jLabel46.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel46.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel46.setText("22");
+        add(jLabel46);
+        jLabel46.setBounds(784, 2, 42, 17);
+
+        jLabel47.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel47.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel47.setText("21");
+        add(jLabel47);
+        jLabel47.setBounds(711, 2, 42, 17);
+
+        jLabel48.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel48.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel48.setText("20");
+        add(jLabel48);
+        jLabel48.setBounds(638, 2, 42, 17);
+
+        jLabel49.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel49.setForeground(new java.awt.Color(255, 215, 0));
+        jLabel49.setText("19");
+        add(jLabel49);
+        jLabel49.setBounds(565, 2, 42, 17);
     }// </editor-fold>//GEN-END:initComponents
 
 
@@ -192,10 +368,35 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
+    private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel40;
+    private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel42;
+    private javax.swing.JLabel jLabel43;
+    private javax.swing.JLabel jLabel44;
+    private javax.swing.JLabel jLabel45;
+    private javax.swing.JLabel jLabel46;
+    private javax.swing.JLabel jLabel47;
+    private javax.swing.JLabel jLabel48;
+    private javax.swing.JLabel jLabel49;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
