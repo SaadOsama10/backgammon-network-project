@@ -13,6 +13,8 @@ public class GamePanel extends javax.swing.JPanel {
     private int selectedPoint = -1; // المثلث المختار
     private int[] currentDice = {0, 0}; // النرد الحالي
     private game.BackgammonBoard board = new game.BackgammonBoard();
+    private javax.swing.JLabel selectedLabel = null;
+    private int selectedPointIndex = -1;
 
     /**
      * Creates new form GamePanel
@@ -99,50 +101,110 @@ public class GamePanel extends javax.swing.JPanel {
         jPanel3.setLayout(null);
 
         point19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_black_5.png"))); // NOI18N
+        point19.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point19MouseClicked(evt);
+            }
+        });
         jPanel3.add(point19);
         point19.setBounds(5, 0, 70, 250);
 
         point20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
+        point20.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point20MouseClicked(evt);
+            }
+        });
         jPanel3.add(point20);
         point20.setBounds(78, 0, 70, 250);
 
         point21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0.png"))); // NOI18N
+        point21.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point21MouseClicked(evt);
+            }
+        });
         jPanel3.add(point21);
         point21.setBounds(151, 0, 70, 250);
 
         point22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
+        point22.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point22MouseClicked(evt);
+            }
+        });
         jPanel3.add(point22);
         point22.setBounds(224, 0, 70, 250);
 
         point23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0.png"))); // NOI18N
+        point23.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point23MouseClicked(evt);
+            }
+        });
         jPanel3.add(point23);
         point23.setBounds(297, 0, 70, 250);
 
         point24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_2.png"))); // NOI18N
+        point24.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point24MouseClicked(evt);
+            }
+        });
         jPanel3.add(point24);
         point24.setBounds(370, 0, 70, 250);
 
         point6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_5_flipped.png"))); // NOI18N
+        point6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point6MouseClicked(evt);
+            }
+        });
         jPanel3.add(point6);
         point6.setBounds(5, 410, 70, 250);
 
         point5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
+        point5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point5MouseClicked(evt);
+            }
+        });
         jPanel3.add(point5);
         point5.setBounds(78, 410, 70, 250);
 
         point4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0_flipped.png"))); // NOI18N
+        point4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point4MouseClicked(evt);
+            }
+        });
         jPanel3.add(point4);
         point4.setBounds(151, 410, 70, 250);
 
         point3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
+        point3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point3MouseClicked(evt);
+            }
+        });
         jPanel3.add(point3);
         point3.setBounds(224, 410, 70, 250);
 
         point2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0_flipped.png"))); // NOI18N
+        point2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point2MouseClicked(evt);
+            }
+        });
         jPanel3.add(point2);
         point2.setBounds(297, 410, 70, 250);
 
         point1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_black_2_flipped.png"))); // NOI18N
+        point1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point1MouseClicked(evt);
+            }
+        });
         jPanel3.add(point1);
         point1.setBounds(370, 410, 70, 250);
 
@@ -159,50 +221,110 @@ public class GamePanel extends javax.swing.JPanel {
         jPanel1.setLayout(null);
 
         point14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
+        point14.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point14MouseClicked(evt);
+            }
+        });
         jPanel1.add(point14);
         point14.setBounds(78, 0, 70, 250);
 
         point15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0.png"))); // NOI18N
+        point15.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point15MouseClicked(evt);
+            }
+        });
         jPanel1.add(point15);
         point15.setBounds(151, 0, 70, 250);
 
         point16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
+        point16.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point16MouseClicked(evt);
+            }
+        });
         jPanel1.add(point16);
         point16.setBounds(224, 0, 70, 250);
 
         point17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_black_3.png"))); // NOI18N
+        point17.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point17MouseClicked(evt);
+            }
+        });
         jPanel1.add(point17);
         point17.setBounds(297, 0, 70, 250);
 
         point18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0.png"))); // NOI18N
+        point18.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point18MouseClicked(evt);
+            }
+        });
         jPanel1.add(point18);
         point18.setBounds(370, 0, 70, 250);
 
         point12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_black_5_flipped.png"))); // NOI18N
+        point12.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point12MouseClicked(evt);
+            }
+        });
         jPanel1.add(point12);
         point12.setBounds(5, 410, 70, 250);
 
         point11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
+        point11.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point11MouseClicked(evt);
+            }
+        });
         jPanel1.add(point11);
         point11.setBounds(78, 410, 70, 250);
 
         point10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_0_flipped.png"))); // NOI18N
+        point10.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point10MouseClicked(evt);
+            }
+        });
         jPanel1.add(point10);
         point10.setBounds(151, 410, 70, 250);
 
         point9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
+        point9.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point9MouseClicked(evt);
+            }
+        });
         jPanel1.add(point9);
         point9.setBounds(224, 410, 70, 250);
 
         point8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_white_white_3_flipped.png"))); // NOI18N
+        point8.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point8MouseClicked(evt);
+            }
+        });
         jPanel1.add(point8);
         point8.setBounds(297, 410, 70, 250);
 
         point7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_0_flipped.png"))); // NOI18N
+        point7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point7MouseClicked(evt);
+            }
+        });
         jPanel1.add(point7);
         point7.setBounds(370, 410, 70, 250);
 
         point13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/triangle_red_white_5.png"))); // NOI18N
+        point13.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                point13MouseClicked(evt);
+            }
+        });
         jPanel1.add(point13);
         point13.setBounds(5, 0, 70, 250);
 
@@ -379,6 +501,126 @@ int[] dice = board.rollDice();
 jLabel51.setText(" " + dice[0] + " - " + dice[1]);
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void point1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point1MouseClicked
+        pointClicked(point1, 1);
+
+    }//GEN-LAST:event_point1MouseClicked
+
+    private void point2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point2MouseClicked
+        pointClicked(point2, 2);
+
+    }//GEN-LAST:event_point2MouseClicked
+
+    private void point3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point3MouseClicked
+        pointClicked(point3, 3);
+
+    }//GEN-LAST:event_point3MouseClicked
+
+    private void point4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point4MouseClicked
+        pointClicked(point4, 4);
+
+    }//GEN-LAST:event_point4MouseClicked
+
+    private void point5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point5MouseClicked
+        pointClicked(point5, 5);
+
+    }//GEN-LAST:event_point5MouseClicked
+
+    private void point6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point6MouseClicked
+        pointClicked(point6, 6);
+
+    }//GEN-LAST:event_point6MouseClicked
+
+    private void point7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point7MouseClicked
+        pointClicked(point7, 7);
+
+    }//GEN-LAST:event_point7MouseClicked
+
+    private void point8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point8MouseClicked
+        pointClicked(point8, 8);
+
+    }//GEN-LAST:event_point8MouseClicked
+
+    private void point9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point9MouseClicked
+        pointClicked(point9, 9);
+
+    }//GEN-LAST:event_point9MouseClicked
+
+    private void point10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point10MouseClicked
+        pointClicked(point10, 10);
+
+    }//GEN-LAST:event_point10MouseClicked
+
+    private void point11MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point11MouseClicked
+        pointClicked(point11, 11);
+
+    }//GEN-LAST:event_point11MouseClicked
+
+    private void point12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point12MouseClicked
+        pointClicked(point12, 12);
+
+    }//GEN-LAST:event_point12MouseClicked
+
+    private void point13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point13MouseClicked
+        pointClicked(point13, 13);
+
+    }//GEN-LAST:event_point13MouseClicked
+
+    private void point14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point14MouseClicked
+        pointClicked(point14, 14);
+
+    }//GEN-LAST:event_point14MouseClicked
+
+    private void point15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point15MouseClicked
+        pointClicked(point15, 15);
+
+    }//GEN-LAST:event_point15MouseClicked
+
+    private void point16MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point16MouseClicked
+        pointClicked(point16, 16);
+
+    }//GEN-LAST:event_point16MouseClicked
+
+    private void point17MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point17MouseClicked
+        pointClicked(point17, 17);
+
+    }//GEN-LAST:event_point17MouseClicked
+
+    private void point18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point18MouseClicked
+        pointClicked(point18, 18);
+
+    }//GEN-LAST:event_point18MouseClicked
+
+    private void point19MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point19MouseClicked
+        pointClicked(point19, 19);
+
+    }//GEN-LAST:event_point19MouseClicked
+
+    private void point20MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point20MouseClicked
+        pointClicked(point20, 20);
+
+    }//GEN-LAST:event_point20MouseClicked
+
+    private void point21MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point21MouseClicked
+        pointClicked(point21, 21);
+
+    }//GEN-LAST:event_point21MouseClicked
+
+    private void point22MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point22MouseClicked
+        pointClicked(point22, 22);
+
+    }//GEN-LAST:event_point22MouseClicked
+
+    private void point23MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point23MouseClicked
+        pointClicked(point23, 23);
+
+    }//GEN-LAST:event_point23MouseClicked
+
+    private void point24MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point24MouseClicked
+        pointClicked(point24, 24);
+
+    }//GEN-LAST:event_point24MouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton2;
@@ -436,4 +678,26 @@ jLabel51.setText(" " + dice[0] + " - " + dice[1]);
     private javax.swing.JLabel point8;
     private javax.swing.JLabel point9;
     // End of variables declaration//GEN-END:variables
+
+
+
+public void pointClicked(javax.swing.JLabel label, int pointIndex) {
+    
+    // لو مفيش مثلث محدد — حدد هذا المثلث
+    if (selectedLabel == null) {
+        selectedLabel = label;
+        selectedPointIndex = pointIndex;
+        // لون المثلث عشان يبان محدد
+        label.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
+        return;
+    }
+    
+    // لو في مثلث محدد — حاول تتحرك
+    // شيل التحديد
+    selectedLabel.setBorder(null);
+    selectedLabel = null;
+    selectedPointIndex = -1;
+}
+
+
 }
