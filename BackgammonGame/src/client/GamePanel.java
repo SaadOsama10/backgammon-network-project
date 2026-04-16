@@ -104,6 +104,8 @@ private boolean[] flippedPoints = {
         jLabel49 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
+        barLabel1 = new javax.swing.JLabel();
+        barLabel2 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(92, 61, 30));
         setToolTipText("255");
@@ -509,6 +511,29 @@ private boolean[] flippedPoints = {
         jPanel2.add(jButton2);
         jButton2.setBounds(0, 320, 49, 30);
 
+        barLabel1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        barLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        barLabel1.setText("W: 0");
+        barLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                barLabel1MouseClicked(evt);
+            }
+        });
+        jPanel2.add(barLabel1);
+        barLabel1.setBounds(5, 10, 40, 40);
+
+        barLabel2.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        barLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        barLabel2.setText("B: 0");
+        barLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                barLabel2MouseClicked(evt);
+            }
+        });
+        jPanel2.add(barLabel2);
+        barLabel2.setBounds(5, 620, 40, 40);
+        barLabel2.getAccessibleContext().setAccessibleName("B: 0");
+
         add(jPanel2);
         jPanel2.setBounds(478, 20, 50, 660);
     }// </editor-fold>//GEN-END:initComponents
@@ -640,8 +665,26 @@ private boolean[] flippedPoints = {
 
     }//GEN-LAST:event_point24MouseClicked
 
+    private void barLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_barLabel1MouseClicked
+        if (board.getCurrentPlayer() == 1 && board.getBarPlayer1() > 0) {
+    selectedLabel = barLabel1;
+    selectedPointIndex = -1; // -1 يعني من البار
+    barLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
+}
+    }//GEN-LAST:event_barLabel1MouseClicked
+
+    private void barLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_barLabel2MouseClicked
+        if (board.getCurrentPlayer() == 2 && board.getBarPlayer2() > 0) {
+    selectedLabel = barLabel2;
+    selectedPointIndex = -1;
+    barLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
+}
+    }//GEN-LAST:event_barLabel2MouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel barLabel1;
+    private javax.swing.JLabel barLabel2;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
@@ -702,86 +745,146 @@ private boolean[] flippedPoints = {
 
 public void pointClicked(javax.swing.JLabel label, int pointIndex) {
     
-    // شيل التحديد القديم
     if (selectedLabel != null) {
         selectedLabel.setBorder(null);
     }
     
-    // لو ضغط على نفس المثلث → شيل التحديد
     if (selectedLabel == label) {
         selectedLabel = null;
         selectedPointIndex = -1;
         return;
     }
     
-    // لو في مثلث محدد قبل → هذا هو الهدف
-    if (selectedLabel != null && selectedPointIndex != -1) {
+    if (selectedLabel != null) {
         
         if (!diceRolled) {
-    javax.swing.JOptionPane.showMessageDialog(this, "Roll the dice first!");
-    selectedLabel = null;
-    selectedPointIndex = -1;
-    return;
-}
+            javax.swing.JOptionPane.showMessageDialog(this, "Roll the dice first!");
+            selectedLabel = null;
+            selectedPointIndex = -1;
+            return;
+        }
         
-        int from = selectedPointIndex - 1; // index في الـ array
         int to = pointIndex - 1;
         int player = board.getCurrentPlayer();
         
-        // تحقق إن اللاعب يحرك قطعته هو مش قطعة الخصم
-if (player == 1 && board.getPoint(from) <= 0) {
-    javax.swing.JOptionPane.showMessageDialog(this, "It's White's Turn! ⚪ Move your white pieces!");
-    selectedLabel = null;
-    selectedPointIndex = -1;
-    return;
-}
-if (player == 2 && board.getPoint(from) >= 0) {
-    javax.swing.JOptionPane.showMessageDialog(this, "It's Black's Turn! ⚫ Move your black pieces!");
-    selectedLabel = null;
-    selectedPointIndex = -1;
-    return;
-}
-        
-        
-        
-        // تحقق هل الحركة صح
-        if (board.isValidMove(from, to, player)) {
-    int diff;
-    if (player == 1) {
-        diff = from - to;
-    } else {
-        diff = to - from;
-    }
-    if (Math.abs(diff) != currentDice[0] && Math.abs(diff) != currentDice[1]) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Use dice numbers: " + currentDice[0] + " or " + currentDice[1]);
-        selectedLabel = null;
-        selectedPointIndex = -1;
-        return;
-    }
-            board.movePiece(from, to, player);
-            
-            // حدّث صورة المثلث الأصلي
-            int fromPieces = Math.abs(board.getPoint(from));
-            String fromPieceColor = board.getPoint(from) > 0 ? "white" : "black";
-            updatePointImage(selectedLabel, triColors[from], fromPieces == 0 ? "white" : fromPieceColor, fromPieces, flippedPoints[from]);
-            
-            // حدّث صورة المثلث الهدف
+        // لو اللاعب جاي من البار
+        if (selectedPointIndex == -1) {
+            if (player == 1) {
+                if (to < 18) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Enter from the Bar into points 19-24!");
+                    selectedLabel.setBorder(null);
+                    selectedLabel = null;
+                    selectedPointIndex = -1;
+                    return;
+                }
+            } else {
+                if (to > 5) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Enter from the Bar into points 1-6!");
+                    selectedLabel.setBorder(null);
+                    selectedLabel = null;
+                    selectedPointIndex = -1;
+                    return;
+                }
+            }
+            board.enterFromBar(to, player);
+            barLabel1.setText("W: " + board.getBarPlayer1());
+            barLabel2.setText("B: " + board.getBarPlayer2());
             int toPieces = Math.abs(board.getPoint(to));
             String toPieceColor = board.getPoint(to) > 0 ? "white" : "black";
             updatePointImage(label, triColors[to], toPieces == 0 ? "white" : toPieceColor, toPieces, flippedPoints[to]);
-            
+            selectedLabel.setBorder(null);
+            selectedLabel = null;
+            selectedPointIndex = -1;
             board.switchPlayer();
             diceRolled = false;
-            
-            java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
-if (window instanceof javax.swing.JFrame) {
-    ((javax.swing.JFrame) window).setTitle(
-        board.getCurrentPlayer() == 1 ? 
-        "Backgammon - White's Turn ⚪" : 
-        "Backgammon - Black's Turn ⚫"
-    );
+            return;
+        }
+        
+        int from = selectedPointIndex - 1;
+        
+        if (player == 1 && board.getBarPlayer1() > 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "You have pieces on the Bar! Enter them first!");
+            selectedLabel = null;
+            selectedPointIndex = -1;
+            return;
+        }
+        if (player == 2 && board.getBarPlayer2() > 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "You have pieces on the Bar! Enter them first!");
+            selectedLabel = null;
+            selectedPointIndex = -1;
+            return;
+        }
+        
+        if (player == 1 && board.getPoint(from) <= 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "It's White's Turn! Move your white pieces!");
+            selectedLabel = null;
+            selectedPointIndex = -1;
+            return;
+        }
+        if (player == 2 && board.getPoint(from) >= 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "It's Black's Turn! Move your black pieces!");
+            selectedLabel = null;
+            selectedPointIndex = -1;
+            return;
+        }
+        
+        if (!board.isValidMove(from, to, player)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Point is blocked or full!");
+            selectedLabel = null;
+            selectedPointIndex = -1;
+            return;
+        }
+        
+        // تحقق من الاتجاه الصح
+if (player == 1 && to >= from) {
+    javax.swing.JOptionPane.showMessageDialog(this, "White moves from 24 to 1!");
+    selectedLabel = null;
+    selectedPointIndex = -1;
+    return;
 }
-    
+if (player == 2 && to <= from) {
+    javax.swing.JOptionPane.showMessageDialog(this, "Black moves from 1 to 24!");
+    selectedLabel = null;
+    selectedPointIndex = -1;
+    return;
+}
+        
+        
+        int diff;
+        if (player == 1) {
+            diff = from - to;
+        } else {
+            diff = to - from;
+        }
+        if (Math.abs(diff) != currentDice[0] && Math.abs(diff) != currentDice[1]) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Use dice numbers: " + currentDice[0] + " or " + currentDice[1]);
+            selectedLabel = null;
+            selectedPointIndex = -1;
+            return;
+        }
+        
+        board.movePiece(from, to, player);
+        barLabel1.setText("W: " + board.getBarPlayer1());
+        barLabel2.setText("B: " + board.getBarPlayer2());
+        
+        int fromPieces = Math.abs(board.getPoint(from));
+        String fromPieceColor = board.getPoint(from) > 0 ? "white" : "black";
+        updatePointImage(selectedLabel, triColors[from], fromPieces == 0 ? "white" : fromPieceColor, fromPieces, flippedPoints[from]);
+        
+        int toPieces = Math.abs(board.getPoint(to));
+        String toPieceColor = board.getPoint(to) > 0 ? "white" : "black";
+        updatePointImage(label, triColors[to], toPieces == 0 ? "white" : toPieceColor, toPieces, flippedPoints[to]);
+        
+        board.switchPlayer();
+        diceRolled = false;
+        
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (window instanceof javax.swing.JFrame) {
+            ((javax.swing.JFrame) window).setTitle(
+                board.getCurrentPlayer() == 1 ? 
+                "Backgammon - White's Turn ⚪" : 
+                "Backgammon - Black's Turn ⚫"
+            );
         }
         
         selectedLabel = null;
@@ -789,12 +892,10 @@ if (window instanceof javax.swing.JFrame) {
         return;
     }
     
-    // حدد المثلث الجديد
     selectedLabel = label;
     selectedPointIndex = pointIndex;
     label.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
 }
-
 public void updatePointImage(javax.swing.JLabel label, String triColor, String pieceColor, int pieces, boolean flipped) {
     String flippedStr = flipped ? "_flipped" : "";
     String path = "/images/triangle_" + triColor + "_" + pieceColor + "_" + pieces + flippedStr + ".png";
