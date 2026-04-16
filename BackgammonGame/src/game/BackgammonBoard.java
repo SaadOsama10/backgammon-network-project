@@ -79,6 +79,10 @@ public boolean isValidMove(int from, int to, int player) {
     if (player == 1 && points[to] <= -2) return false;
     if (player == 2 && points[to] >= 2)  return false;
     
+    // المثلث الوجهة ما يكونش ممتلئ (أكتر من 5)
+if (player == 1 && points[to] >= 5) return false;
+if (player == 2 && points[to] <= -5) return false;
+    
     return true;
 }
 // تحريك القطعة
@@ -100,11 +104,81 @@ public void movePiece(int from, int to, int player) {
         barPlayer1++;
     }
     
+    
+    
     // حط القطعة في المثلث الجديد
     if (player == 1) {
         points[to]++;
     } else {
         points[to]--;
+    }
+}
+
+public int getBarPlayer1() {
+    return barPlayer1;
+}
+
+public int getBarPlayer2() {
+    return barPlayer2;
+}
+
+public void enterFromBar(int to, int player) {
+    
+    // لو في قطعة خصم وحيدة → اكلها!
+    if (player == 1 && points[to] == -1) {
+        points[to] = 0;
+        barPlayer2++;
+    } else if (player == 2 && points[to] == 1) {
+        points[to] = 0;
+        barPlayer1++;
+    }
+    
+    // حط القطعة في المثلث
+    if (player == 1) {
+        points[to]++;
+        barPlayer1--;
+    } else {
+        points[to]--;
+        barPlayer2--;
+    }
+}
+
+public boolean canBearOff(int player) {
+    if (player == 1) {
+        // كل قطع اللاعب 1 لازم تكون في index 0-5
+        for (int i = 6; i < 24; i++) {
+            if (points[i] > 0) return false;
+        }
+    } else {
+        // كل قطع اللاعب 2 لازم تكون في index 18-23
+        for (int i = 0; i < 18; i++) {
+            if (points[i] < 0) return false;
+        }
+    }
+    return true;
+}
+
+public void bearOff(int from, int player) {
+    if (player == 1) {
+        points[from]--;
+    } else {
+        points[from]++;
+    }
+}
+
+public boolean hasWon(int player) {
+    if (player == 1) {
+        // لاعب 1 كسب لو ما عندوش قطع على اللوحة أو البار
+        for (int i = 0; i < 24; i++) {
+            if (points[i] > 0) return false;
+        }
+        return barPlayer1 == 0;
+    } else {
+        // لاعب 2 كسب لو ما عندوش قطع على اللوحة أو البار
+        for (int i = 0; i < 24; i++) {
+            if (points[i] < 0) return false;
+        }
+        return barPlayer2 == 0;
     }
 }
 
