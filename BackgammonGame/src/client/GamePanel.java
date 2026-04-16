@@ -106,6 +106,7 @@ private boolean[] flippedPoints = {
         jButton2 = new javax.swing.JButton();
         barLabel1 = new javax.swing.JLabel();
         barLabel2 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(92, 61, 30));
         setToolTipText("255");
@@ -534,6 +535,18 @@ private boolean[] flippedPoints = {
         barLabel2.setBounds(5, 620, 40, 40);
         barLabel2.getAccessibleContext().setAccessibleName("B: 0");
 
+        jButton3.setBackground(new java.awt.Color(255, 215, 0));
+        jButton3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jButton3.setForeground(new java.awt.Color(0, 0, 0));
+        jButton3.setText("BO");
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton3MouseClicked(evt);
+            }
+        });
+        jPanel2.add(jButton3);
+        jButton3.setBounds(-2, 240, 52, 30);
+
         add(jPanel2);
         jPanel2.setBounds(478, 20, 50, 660);
     }// </editor-fold>//GEN-END:initComponents
@@ -681,11 +694,40 @@ private boolean[] flippedPoints = {
 }
     }//GEN-LAST:event_barLabel2MouseClicked
 
+    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+        int player = board.getCurrentPlayer();
+
+if (!board.canBearOff(player)) {
+    javax.swing.JOptionPane.showMessageDialog(this, "You can't bear off yet! Move all pieces to your home board first!");
+    return;
+}
+
+if (selectedLabel == null) {
+    javax.swing.JOptionPane.showMessageDialog(this, "Select a piece to bear off first!");
+    return;
+}
+
+int from = selectedPointIndex - 1;
+
+board.bearOff(from, player);
+
+int fromPieces = Math.abs(board.getPoint(from));
+String fromPieceColor = board.getPoint(from) > 0 ? "white" : "black";
+updatePointImage(selectedLabel, triColors[from], fromPieces == 0 ? "white" : fromPieceColor, fromPieces, flippedPoints[from]);
+
+selectedLabel.setBorder(null);
+selectedLabel = null;
+selectedPointIndex = -1;
+board.switchPlayer();
+diceRolled = false;
+    }//GEN-LAST:event_jButton3MouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel barLabel1;
     private javax.swing.JLabel barLabel2;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
