@@ -37,15 +37,15 @@ public class BoardPanel extends javax.swing.JPanel {
         setRequestFocusEnabled(false);
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Helvetica Neue", 1, 48)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 48)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 215, 0));
         jLabel1.setText("Backgammon");
         add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(341, 80, 318, 60));
 
-        jLabel2.setFont(new java.awt.Font("Helvetica Neue", 1, 16)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Enter your name:");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(437, 280, 126, 25));
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(434, 280, 132, 25));
 
         jTextField1.setFont(new java.awt.Font("Helvetica Neue", 0, 16)); // NOI18N
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
@@ -56,7 +56,7 @@ public class BoardPanel extends javax.swing.JPanel {
         add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(437, 315, 126, 35));
 
         jButton1.setBackground(new java.awt.Color(255, 215, 0));
-        jButton1.setFont(new java.awt.Font("Helvetica Neue", 1, 16)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         jButton1.setForeground(new java.awt.Color(0, 0, 0));
         jButton1.setText("Start Game");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -72,19 +72,28 @@ public class BoardPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String playerName = jTextField1.getText();
+           String playerName = jTextField1.getText();
     
     if (playerName.trim().isEmpty()) {
         javax.swing.JOptionPane.showMessageDialog(this, "Please enter your name!");
         return;
     }
     
+    String serverIP = javax.swing.JOptionPane.showInputDialog(this, "Enter server IP:", "localhost");
+    if (serverIP == null) return;
+    
     javax.swing.JFrame frame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
     frame.getContentPane().removeAll();
-    frame.getContentPane().add(new GamePanel());
+    frame.getContentPane().setLayout(new java.awt.BorderLayout());
+    
+    GamePanel gamePanel = new GamePanel();
+    GameClient client = new GameClient(serverIP, gamePanel);
+    gamePanel.setGameClient(client);
+    
+    frame.getContentPane().add(gamePanel, java.awt.BorderLayout.CENTER);
+    frame.setTitle("Backgammon - White's Turn ⚪");
     frame.revalidate();
     frame.repaint();
-    frame.setTitle("Backgammon - White's Turn ⚪");
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
