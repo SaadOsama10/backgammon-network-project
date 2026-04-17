@@ -904,9 +904,6 @@
             </Property>
             <Property name="text" type="java.lang.String" value="B: 0"/>
           </Properties>
-          <AccessibilityProperties>
-            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="B: 0"/>
-          </AccessibilityProperties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="barLabel2MouseClicked"/>
           </Events>
