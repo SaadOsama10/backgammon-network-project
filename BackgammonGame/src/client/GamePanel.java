@@ -16,6 +16,7 @@ public class GamePanel extends javax.swing.JPanel {
     private javax.swing.JLabel selectedLabel = null;
     private int selectedPointIndex = -1;
     private boolean diceRolled = false;
+    private GameClient gameClient;
 
     
     // ألوان المثلثات (24 مثلث)
@@ -533,7 +534,6 @@ private boolean[] flippedPoints = {
         });
         jPanel2.add(barLabel2);
         barLabel2.setBounds(5, 620, 40, 40);
-        barLabel2.getAccessibleContext().setAccessibleName("B: 0");
 
         jButton3.setBackground(new java.awt.Color(255, 215, 0));
         jButton3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
@@ -552,9 +552,12 @@ private boolean[] flippedPoints = {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        currentDice = board.rollDice();
-        diceRolled = true;
-        
+        if (diceRolled) {
+        javax.swing.JOptionPane.showMessageDialog(this, "You already rolled! Make your move first!");
+        return;
+    }
+    currentDice = board.rollDice();
+    diceRolled = true;
     jLabel51.setText(" " + currentDice[0] + " - " + currentDice[1]);
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -720,6 +723,24 @@ selectedLabel = null;
 selectedPointIndex = -1;
 board.switchPlayer();
 diceRolled = false;
+
+if (board.hasWon(player)) {
+    String winner = player == 1 ? "White ⚪" : "Black ⚫";
+    int choice = javax.swing.JOptionPane.showConfirmDialog(this, 
+        winner + " wins!\nPlay again?", 
+        "Game Over", 
+        javax.swing.JOptionPane.YES_NO_OPTION);
+    if (choice == javax.swing.JOptionPane.YES_OPTION) {
+        // نرجع لشاشة البداية
+        javax.swing.JFrame frame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+        frame.getContentPane().removeAll();
+        frame.getContentPane().add(new BoardPanel());
+        frame.revalidate();
+        frame.repaint();
+    } else {
+        System.exit(0);
+    }
+}
     }//GEN-LAST:event_jButton3MouseClicked
 
 
@@ -811,6 +832,44 @@ public void pointClicked(javax.swing.JLabel label, int pointIndex) {
         
         // لو اللاعب جاي من البار
         if (selectedPointIndex == -1) {
+            
+            // تحقق لو كل المكانين مبلوكين
+            if (player == 1) {
+                boolean allBlocked = true;
+                for (int i = 18; i < 24; i++) {
+                    if (board.canEnterFromBar(i, player)) {
+                        allBlocked = false;
+                        break;
+                    }
+                }
+                if (allBlocked) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "All entry points are blocked! Turn lost!");
+                    selectedLabel.setBorder(null);
+                    selectedLabel = null;
+                    selectedPointIndex = -1;
+                    board.switchPlayer();
+                    diceRolled = false;
+                    return;
+                }
+            } else {
+                boolean allBlocked = true;
+                for (int i = 0; i < 6; i++) {
+                    if (board.canEnterFromBar(i, player)) {
+                        allBlocked = false;
+                        break;
+                    }
+                }
+                if (allBlocked) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "All entry points are blocked! Turn lost!");
+                    selectedLabel.setBorder(null);
+                    selectedLabel = null;
+                    selectedPointIndex = -1;
+                    board.switchPlayer();
+                    diceRolled = false;
+                    return;
+                }
+            }
+            
             if (player == 1) {
                 if (to < 18) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Enter from the Bar into points 19-24!");
@@ -828,6 +887,26 @@ public void pointClicked(javax.swing.JLabel label, int pointIndex) {
                     return;
                 }
             }
+            
+            // تحقق من النرد
+            int diff = player == 1 ? (23 - to) : to;
+            if (Math.abs(diff) != currentDice[0] && Math.abs(diff) != currentDice[1]) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Use dice numbers: " + currentDice[0] + " or " + currentDice[1]);
+                selectedLabel.setBorder(null);
+                selectedLabel = null;
+                selectedPointIndex = -1;
+                return;
+            }
+            
+            // تحقق من المكان مش مسكور
+            if (!board.canEnterFromBar(to, player)) {
+                javax.swing.JOptionPane.showMessageDialog(this, "This point is blocked by your opponent!");
+                selectedLabel.setBorder(null);
+                selectedLabel = null;
+                selectedPointIndex = -1;
+                return;
+            }
+            
             board.enterFromBar(to, player);
             barLabel1.setText("W: " + board.getBarPlayer1());
             barLabel2.setText("B: " + board.getBarPlayer2());
@@ -839,6 +918,24 @@ public void pointClicked(javax.swing.JLabel label, int pointIndex) {
             selectedPointIndex = -1;
             board.switchPlayer();
             diceRolled = false;
+            
+            if (board.hasWon(player)) {
+                String winner = player == 1 ? "White ⚪" : "Black ⚫";
+                int choice = javax.swing.JOptionPane.showConfirmDialog(this, 
+                    winner + " wins!\nPlay again?", 
+                    "Game Over", 
+                    javax.swing.JOptionPane.YES_NO_OPTION);
+                if (choice == javax.swing.JOptionPane.YES_OPTION) {
+                    javax.swing.JFrame frame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+                    frame.getContentPane().removeAll();
+                    frame.getContentPane().add(new BoardPanel());
+                    frame.revalidate();
+                    frame.repaint();
+                } else {
+                    System.exit(0);
+                }
+            }
+            
             return;
         }
         
@@ -877,20 +974,18 @@ public void pointClicked(javax.swing.JLabel label, int pointIndex) {
             return;
         }
         
-        // تحقق من الاتجاه الصح
-if (player == 1 && to >= from) {
-    javax.swing.JOptionPane.showMessageDialog(this, "White moves from 24 to 1!");
-    selectedLabel = null;
-    selectedPointIndex = -1;
-    return;
-}
-if (player == 2 && to <= from) {
-    javax.swing.JOptionPane.showMessageDialog(this, "Black moves from 1 to 24!");
-    selectedLabel = null;
-    selectedPointIndex = -1;
-    return;
-}
-        
+        if (player == 1 && to >= from) {
+            javax.swing.JOptionPane.showMessageDialog(this, "White moves from 24 to 1!");
+            selectedLabel = null;
+            selectedPointIndex = -1;
+            return;
+        }
+        if (player == 2 && to <= from) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Black moves from 1 to 24!");
+            selectedLabel = null;
+            selectedPointIndex = -1;
+            return;
+        }
         
         int diff;
         if (player == 1) {
@@ -906,6 +1001,11 @@ if (player == 2 && to <= from) {
         }
         
         board.movePiece(from, to, player);
+        
+        if (gameClient != null) {
+            gameClient.sendMove(from, to);
+        }
+        
         barLabel1.setText("W: " + board.getBarPlayer1());
         barLabel2.setText("B: " + board.getBarPlayer2());
         
@@ -919,6 +1019,23 @@ if (player == 2 && to <= from) {
         
         board.switchPlayer();
         diceRolled = false;
+        
+        if (board.hasWon(player)) {
+            String winner = player == 1 ? "White ⚪" : "Black ⚫";
+            int choice = javax.swing.JOptionPane.showConfirmDialog(this, 
+                winner + " wins!\nPlay again?", 
+                "Game Over", 
+                javax.swing.JOptionPane.YES_NO_OPTION);
+            if (choice == javax.swing.JOptionPane.YES_OPTION) {
+                javax.swing.JFrame frame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+                frame.getContentPane().removeAll();
+                frame.getContentPane().add(new BoardPanel());
+                frame.revalidate();
+                frame.repaint();
+            } else {
+                System.exit(0);
+            }
+        }
         
         java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
         if (window instanceof javax.swing.JFrame) {
@@ -949,6 +1066,26 @@ label.setIcon(new javax.swing.ImageIcon(img));
     } else {
         System.out.println("IMAGE NOT FOUND: " + path);
     }
+}
+
+public void applyOpponentMove(int from, int to) {
+    board.movePiece(from, to, board.getCurrentPlayer());
+    
+    barLabel1.setText("W: " + board.getBarPlayer1());
+    barLabel2.setText("B: " + board.getBarPlayer2());
+    
+    int fromPieces = Math.abs(board.getPoint(from));
+    String fromPieceColor = board.getPoint(from) > 0 ? "white" : "black";
+    
+    int toPieces = Math.abs(board.getPoint(to));
+    String toPieceColor = board.getPoint(to) > 0 ? "white" : "black";
+    
+    // هنحدث الصور بعدين
+    board.switchPlayer();
+}
+
+public void setGameClient(GameClient client) {
+    this.gameClient = client;
 }
 
 
