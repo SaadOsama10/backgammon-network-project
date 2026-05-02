@@ -11,24 +11,56 @@ import java.net.*;
  *
  * @author saadrady
  */
+
 public class GameClient {
-    public static void main(String[] args) {
-        
+    
+    private Socket socket;
+    private PrintWriter out;
+    private BufferedReader in;
+    private int playerNumber;
+    private GamePanel gamePanel;
+    
+    public GameClient(String serverIP, GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
         try {
-            Socket socket = new Socket("localhost", 6000);
-            System.out.println("Connected to server!");
+            socket = new Socket(serverIP, 6000);
+            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             
-            BufferedReader in = new BufferedReader(
-                new InputStreamReader(socket.getInputStream())
-            );
+            // استقبل رقم اللاعب
+            String firstMessage = in.readLine();
+            if (firstMessage.startsWith("PLAYER:")) {
+                playerNumber = Integer.parseInt(firstMessage.split(":")[1]);
+                System.out.println("You are Player " + playerNumber);
+            }
             
-            String message = in.readLine();
-            System.out.println("Server says: " + message);
-            
-            socket.close();
+            // Thread لاستقبال الحركات من السيرفر
+            new Thread(() -> {
+                try {
+                    String message;
+                    while ((message = in.readLine()) != null) {
+                        if (message.startsWith("MOVE:")) {
+                            String[] parts = message.split(":");
+                            int from = Integer.parseInt(parts[1]);
+                            int to = Integer.parseInt(parts[2]);
+                            gamePanel.applyOpponentMove(from, to);
+                        }
+                    }
+                } catch (IOException e) {
+                    System.out.println("Disconnected from server");
+                }
+            }).start();
             
         } catch (IOException e) {
             System.out.println("Client error: " + e.getMessage());
         }
+    }
+    
+    public void sendMove(int from, int to) {
+        out.println("MOVE:" + from + ":" + to);
+    }
+    
+    public int getPlayerNumber() {
+        return playerNumber;
     }
 }
