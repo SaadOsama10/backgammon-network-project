@@ -104,7 +104,7 @@ public void movePiece(int from, int to, int player) {
         barPlayer1++;
     }
     
-    
+ 
     
     // حط القطعة في المثلث الجديد
     if (player == 1) {
@@ -180,6 +180,12 @@ public boolean hasWon(int player) {
         }
         return barPlayer2 == 0;
     }
+}
+
+public boolean canEnterFromBar(int to, int player) {
+    if (player == 1 && points[to] <= -2) return false;
+    if (player == 2 && points[to] >= 2) return false;
+    return true;
 }
 
 
