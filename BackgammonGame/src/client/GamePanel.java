@@ -684,7 +684,7 @@ private boolean[] flippedPoints = {
     private void barLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_barLabel1MouseClicked
         if (board.getCurrentPlayer() == 1 && board.getBarPlayer1() > 0) {
     selectedLabel = barLabel1;
-    selectedPointIndex = -1; // -1 يعني من البار
+    selectedPointIndex = -1; 
     barLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
 }
     }//GEN-LAST:event_barLabel1MouseClicked
@@ -806,125 +806,237 @@ if (board.hasWon(player)) {
 
 
 
-public void pointClicked(javax.swing.JLabel label, int pointIndex) {
-    
-    if (selectedLabel != null) {
-        selectedLabel.setBorder(null);
-    }
-    
-    if (selectedLabel == label) {
-        selectedLabel = null;
-        selectedPointIndex = -1;
-        return;
-    }
-    
-    if (selectedLabel != null) {
+/**
+     * Handles a click on any triangle point on the board.
+     * First click selects the source point, second click selects the destination.
+     * Validates the move against dice values, direction, and game rules before applying it.
+     *
+     * @param label the JLabel that was clicked
+     * @param pointIndex the point number (1-24)
+     */
+    public void pointClicked(javax.swing.JLabel label, int pointIndex) {
         
-        if (!diceRolled) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Roll the dice first!");
+        // Clear the border from the previously selected point
+        if (selectedLabel != null) {
+            selectedLabel.setBorder(null);
+        }
+        
+        // If the same point is clicked again, deselect it
+        if (selectedLabel == label) {
             selectedLabel = null;
             selectedPointIndex = -1;
             return;
         }
         
-        int to = pointIndex - 1;
-        int player = board.getCurrentPlayer();
-        
-        // لو اللاعب جاي من البار
-        if (selectedPointIndex == -1) {
+        // If a source point is already selected, this click is the destination
+        if (selectedLabel != null) {
             
-            // تحقق لو كل المكانين مبلوكين
-            if (player == 1) {
-                boolean allBlocked = true;
-                for (int i = 18; i < 24; i++) {
-                    if (board.canEnterFromBar(i, player)) {
-                        allBlocked = false;
-                        break;
-                    }
-                }
-                if (allBlocked) {
-                    javax.swing.JOptionPane.showMessageDialog(this, "All entry points are blocked! Turn lost!");
-                    selectedLabel.setBorder(null);
-                    selectedLabel = null;
-                    selectedPointIndex = -1;
-                    board.switchPlayer();
-                    diceRolled = false;
-                    return;
-                }
-            } else {
-                boolean allBlocked = true;
-                for (int i = 0; i < 6; i++) {
-                    if (board.canEnterFromBar(i, player)) {
-                        allBlocked = false;
-                        break;
-                    }
-                }
-                if (allBlocked) {
-                    javax.swing.JOptionPane.showMessageDialog(this, "All entry points are blocked! Turn lost!");
-                    selectedLabel.setBorder(null);
-                    selectedLabel = null;
-                    selectedPointIndex = -1;
-                    board.switchPlayer();
-                    diceRolled = false;
-                    return;
-                }
+            // Player must roll the dice before making a move
+            if (!diceRolled) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Roll the dice first!");
+                selectedLabel = null;
+                selectedPointIndex = -1;
+                return;
             }
             
-            if (player == 1) {
-                if (to < 18) {
+            int to = pointIndex - 1;
+            int player = board.getCurrentPlayer();
+            
+            // Handle re-entry from the Bar
+            if (selectedPointIndex == -1) {
+                
+                // Check if all entry points are blocked — turn is lost
+                if (player == 1) {
+                    boolean allBlocked = true;
+                    for (int i = 18; i < 24; i++) {
+                        if (board.canEnterFromBar(i, player)) { allBlocked = false; break; }
+                    }
+                    if (allBlocked) {
+                        javax.swing.JOptionPane.showMessageDialog(this, "All entry points are blocked! Turn lost!");
+                        selectedLabel.setBorder(null);
+                        selectedLabel = null;
+                        selectedPointIndex = -1;
+                        board.switchPlayer();
+                        diceRolled = false;
+                        return;
+                    }
+                } else {
+                    boolean allBlocked = true;
+                    for (int i = 0; i < 6; i++) {
+                        if (board.canEnterFromBar(i, player)) { allBlocked = false; break; }
+                    }
+                    if (allBlocked) {
+                        javax.swing.JOptionPane.showMessageDialog(this, "All entry points are blocked! Turn lost!");
+                        selectedLabel.setBorder(null);
+                        selectedLabel = null;
+                        selectedPointIndex = -1;
+                        board.switchPlayer();
+                        diceRolled = false;
+                        return;
+                    }
+                }
+                
+                // Player 1 must enter into points 19-24, Player 2 into points 1-6
+                if (player == 1 && to < 18) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Enter from the Bar into points 19-24!");
                     selectedLabel.setBorder(null);
                     selectedLabel = null;
                     selectedPointIndex = -1;
                     return;
-                }
-            } else {
-                if (to > 5) {
+                } else if (player == 2 && to > 5) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Enter from the Bar into points 1-6!");
                     selectedLabel.setBorder(null);
                     selectedLabel = null;
                     selectedPointIndex = -1;
                     return;
                 }
+                
+                // Validate the entry point matches the dice value
+                int diff = player == 1 ? (23 - to) : to;
+                if (Math.abs(diff) != currentDice[0] && Math.abs(diff) != currentDice[1]) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Use dice numbers: " + currentDice[0] + " or " + currentDice[1]);
+                    selectedLabel.setBorder(null);
+                    selectedLabel = null;
+                    selectedPointIndex = -1;
+                    return;
+                }
+                
+                // Check if the destination point is blocked by the opponent
+                if (!board.canEnterFromBar(to, player)) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "This point is blocked by your opponent!");
+                    selectedLabel.setBorder(null);
+                    selectedLabel = null;
+                    selectedPointIndex = -1;
+                    return;
+                }
+                
+                // Apply the bar entry and update the UI
+                board.enterFromBar(to, player);
+                barLabel1.setText("W: " + board.getBarPlayer1());
+                barLabel2.setText("B: " + board.getBarPlayer2());
+                int toPieces = Math.abs(board.getPoint(to));
+                String toPieceColor = board.getPoint(to) > 0 ? "white" : "black";
+                updatePointImage(label, triColors[to], toPieces == 0 ? "white" : toPieceColor, toPieces, flippedPoints[to]);
+                selectedLabel.setBorder(null);
+                selectedLabel = null;
+                selectedPointIndex = -1;
+                board.switchPlayer();
+                diceRolled = false;
+                
+                // Check win condition after bar entry
+                if (board.hasWon(player)) {
+                    String winner = player == 1 ? "White ⚪" : "Black ⚫";
+                    int choice = javax.swing.JOptionPane.showConfirmDialog(this,
+                        winner + " wins!\nPlay again?", "Game Over", javax.swing.JOptionPane.YES_NO_OPTION);
+                    if (choice == javax.swing.JOptionPane.YES_OPTION) {
+                        javax.swing.JFrame frame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+                        frame.getContentPane().removeAll();
+                        frame.getContentPane().add(new BoardPanel());
+                        frame.revalidate();
+                        frame.repaint();
+                    } else {
+                        System.exit(0);
+                    }
+                }
+                return;
             }
             
-            // تحقق من النرد
-            int diff = player == 1 ? (23 - to) : to;
+            int from = selectedPointIndex - 1;
+            
+            // Player must re-enter bar pieces before moving other pieces
+            if (player == 1 && board.getBarPlayer1() > 0) {
+                javax.swing.JOptionPane.showMessageDialog(this, "You have pieces on the Bar! Enter them first!");
+                selectedLabel = null;
+                selectedPointIndex = -1;
+                return;
+            }
+            if (player == 2 && board.getBarPlayer2() > 0) {
+                javax.swing.JOptionPane.showMessageDialog(this, "You have pieces on the Bar! Enter them first!");
+                selectedLabel = null;
+                selectedPointIndex = -1;
+                return;
+            }
+            
+            // Make sure the player is moving their own pieces
+            if (player == 1 && board.getPoint(from) <= 0) {
+                javax.swing.JOptionPane.showMessageDialog(this, "It's White's Turn! Move your white pieces!");
+                selectedLabel = null;
+                selectedPointIndex = -1;
+                return;
+            }
+            if (player == 2 && board.getPoint(from) >= 0) {
+                javax.swing.JOptionPane.showMessageDialog(this, "It's Black's Turn! Move your black pieces!");
+                selectedLabel = null;
+                selectedPointIndex = -1;
+                return;
+            }
+            
+            // Check general move validity (blocking, capacity)
+            if (!board.isValidMove(from, to, player)) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Point is blocked or full!");
+                selectedLabel = null;
+                selectedPointIndex = -1;
+                return;
+            }
+            
+            // Player 1 moves from high to low, Player 2 moves from low to high
+            if (player == 1 && to >= from) {
+                javax.swing.JOptionPane.showMessageDialog(this, "White moves from 24 to 1!");
+                selectedLabel = null;
+                selectedPointIndex = -1;
+                return;
+            }
+            if (player == 2 && to <= from) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Black moves from 1 to 24!");
+                selectedLabel = null;
+                selectedPointIndex = -1;
+                return;
+            }
+            
+            // Validate move distance against the rolled dice values
+            int diff;
+            if (player == 1) {
+                diff = from - to;
+            } else {
+                diff = to - from;
+            }
             if (Math.abs(diff) != currentDice[0] && Math.abs(diff) != currentDice[1]) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Use dice numbers: " + currentDice[0] + " or " + currentDice[1]);
-                selectedLabel.setBorder(null);
                 selectedLabel = null;
                 selectedPointIndex = -1;
                 return;
             }
             
-            // تحقق من المكان مش مسكور
-            if (!board.canEnterFromBar(to, player)) {
-                javax.swing.JOptionPane.showMessageDialog(this, "This point is blocked by your opponent!");
-                selectedLabel.setBorder(null);
-                selectedLabel = null;
-                selectedPointIndex = -1;
-                return;
+            // Apply the move on the board
+            board.movePiece(from, to, player);
+            
+            // Send the move to the opponent via the server
+            if (gameClient != null) {
+                gameClient.sendMove(from, to);
             }
             
-            board.enterFromBar(to, player);
+            // Update bar display
             barLabel1.setText("W: " + board.getBarPlayer1());
             barLabel2.setText("B: " + board.getBarPlayer2());
+            
+            // Update the image of the source point
+            int fromPieces = Math.abs(board.getPoint(from));
+            String fromPieceColor = board.getPoint(from) > 0 ? "white" : "black";
+            updatePointImage(selectedLabel, triColors[from], fromPieces == 0 ? "white" : fromPieceColor, fromPieces, flippedPoints[from]);
+            
+            // Update the image of the destination point
             int toPieces = Math.abs(board.getPoint(to));
             String toPieceColor = board.getPoint(to) > 0 ? "white" : "black";
             updatePointImage(label, triColors[to], toPieces == 0 ? "white" : toPieceColor, toPieces, flippedPoints[to]);
-            selectedLabel.setBorder(null);
-            selectedLabel = null;
-            selectedPointIndex = -1;
+            
             board.switchPlayer();
             diceRolled = false;
             
+            // Check win condition after move
             if (board.hasWon(player)) {
                 String winner = player == 1 ? "White ⚪" : "Black ⚫";
-                int choice = javax.swing.JOptionPane.showConfirmDialog(this, 
-                    winner + " wins!\nPlay again?", 
-                    "Game Over", 
-                    javax.swing.JOptionPane.YES_NO_OPTION);
+                int choice = javax.swing.JOptionPane.showConfirmDialog(this,
+                    winner + " wins!\nPlay again?", "Game Over", javax.swing.JOptionPane.YES_NO_OPTION);
                 if (choice == javax.swing.JOptionPane.YES_OPTION) {
                     javax.swing.JFrame frame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
                     frame.getContentPane().removeAll();
@@ -936,157 +1048,69 @@ public void pointClicked(javax.swing.JLabel label, int pointIndex) {
                 }
             }
             
-            return;
-        }
-        
-        int from = selectedPointIndex - 1;
-        
-        if (player == 1 && board.getBarPlayer1() > 0) {
-            javax.swing.JOptionPane.showMessageDialog(this, "You have pieces on the Bar! Enter them first!");
-            selectedLabel = null;
-            selectedPointIndex = -1;
-            return;
-        }
-        if (player == 2 && board.getBarPlayer2() > 0) {
-            javax.swing.JOptionPane.showMessageDialog(this, "You have pieces on the Bar! Enter them first!");
-            selectedLabel = null;
-            selectedPointIndex = -1;
-            return;
-        }
-        
-        if (player == 1 && board.getPoint(from) <= 0) {
-            javax.swing.JOptionPane.showMessageDialog(this, "It's White's Turn! Move your white pieces!");
-            selectedLabel = null;
-            selectedPointIndex = -1;
-            return;
-        }
-        if (player == 2 && board.getPoint(from) >= 0) {
-            javax.swing.JOptionPane.showMessageDialog(this, "It's Black's Turn! Move your black pieces!");
+            // Update the window title to show whose turn it is
+            java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+            if (window instanceof javax.swing.JFrame) {
+                ((javax.swing.JFrame) window).setTitle(
+                    board.getCurrentPlayer() == 1 ?
+                    "Backgammon - White's Turn ⚪" :
+                    "Backgammon - Black's Turn ⚫"
+                );
+            }
+            
             selectedLabel = null;
             selectedPointIndex = -1;
             return;
         }
         
-        if (!board.isValidMove(from, to, player)) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Point is blocked or full!");
-            selectedLabel = null;
-            selectedPointIndex = -1;
-            return;
-        }
-        
-        if (player == 1 && to >= from) {
-            javax.swing.JOptionPane.showMessageDialog(this, "White moves from 24 to 1!");
-            selectedLabel = null;
-            selectedPointIndex = -1;
-            return;
-        }
-        if (player == 2 && to <= from) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Black moves from 1 to 24!");
-            selectedLabel = null;
-            selectedPointIndex = -1;
-            return;
-        }
-        
-        int diff;
-        if (player == 1) {
-            diff = from - to;
+        // First click - select this point and highlight it with a golden border
+        selectedLabel = label;
+        selectedPointIndex = pointIndex;
+        label.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
+    }
+    
+    /**
+     * Updates the image of a triangle point based on current piece count and colors.
+     * Loads the corresponding PNG image from the images folder.
+     *
+     * @param label the JLabel to update
+     * @param triColor color of the triangle ("red" or "white")
+     * @param pieceColor color of the pieces ("white" or "black")
+     * @param pieces number of pieces on the triangle (0-5)
+     * @param flipped whether the triangle image should be flipped
+     */
+    public void updatePointImage(javax.swing.JLabel label, String triColor, String pieceColor, int pieces, boolean flipped) {
+        String flippedStr = flipped ? "_flipped" : "";
+        String path = "/images/triangle_" + triColor + "_" + pieceColor + "_" + pieces + flippedStr + ".png";
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+            javax.swing.ImageIcon icon = new javax.swing.ImageIcon(imgURL);
+            java.awt.Image img = icon.getImage().getScaledInstance(label.getWidth(), label.getHeight(), java.awt.Image.SCALE_SMOOTH);
+            label.setIcon(new javax.swing.ImageIcon(img));
         } else {
-            diff = to - from;
+            System.out.println("IMAGE NOT FOUND: " + path);
         }
-        if (Math.abs(diff) != currentDice[0] && Math.abs(diff) != currentDice[1]) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Use dice numbers: " + currentDice[0] + " or " + currentDice[1]);
-            selectedLabel = null;
-            selectedPointIndex = -1;
-            return;
-        }
-        
-        board.movePiece(from, to, player);
-        
-        if (gameClient != null) {
-            gameClient.sendMove(from, to);
-        }
-        
+    }
+    
+    /**
+     * Applies the opponent's move received from the server.
+     * Called by GameClient when a MOVE message is received.
+     *
+     * @param from source point index (0-23)
+     * @param to destination point index (0-23)
+     */
+    public void applyOpponentMove(int from, int to) {
+        board.movePiece(from, to, board.getCurrentPlayer());
         barLabel1.setText("W: " + board.getBarPlayer1());
         barLabel2.setText("B: " + board.getBarPlayer2());
-        
-        int fromPieces = Math.abs(board.getPoint(from));
-        String fromPieceColor = board.getPoint(from) > 0 ? "white" : "black";
-        updatePointImage(selectedLabel, triColors[from], fromPieces == 0 ? "white" : fromPieceColor, fromPieces, flippedPoints[from]);
-        
-        int toPieces = Math.abs(board.getPoint(to));
-        String toPieceColor = board.getPoint(to) > 0 ? "white" : "black";
-        updatePointImage(label, triColors[to], toPieces == 0 ? "white" : toPieceColor, toPieces, flippedPoints[to]);
-        
         board.switchPlayer();
-        diceRolled = false;
-        
-        if (board.hasWon(player)) {
-            String winner = player == 1 ? "White ⚪" : "Black ⚫";
-            int choice = javax.swing.JOptionPane.showConfirmDialog(this, 
-                winner + " wins!\nPlay again?", 
-                "Game Over", 
-                javax.swing.JOptionPane.YES_NO_OPTION);
-            if (choice == javax.swing.JOptionPane.YES_OPTION) {
-                javax.swing.JFrame frame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
-                frame.getContentPane().removeAll();
-                frame.getContentPane().add(new BoardPanel());
-                frame.revalidate();
-                frame.repaint();
-            } else {
-                System.exit(0);
-            }
-        }
-        
-        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
-        if (window instanceof javax.swing.JFrame) {
-            ((javax.swing.JFrame) window).setTitle(
-                board.getCurrentPlayer() == 1 ? 
-                "Backgammon - White's Turn ⚪" : 
-                "Backgammon - Black's Turn ⚫"
-            );
-        }
-        
-        selectedLabel = null;
-        selectedPointIndex = -1;
-        return;
     }
     
-    selectedLabel = label;
-    selectedPointIndex = pointIndex;
-    label.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
-}
-public void updatePointImage(javax.swing.JLabel label, String triColor, String pieceColor, int pieces, boolean flipped) {
-    String flippedStr = flipped ? "_flipped" : "";
-    String path = "/images/triangle_" + triColor + "_" + pieceColor + "_" + pieces + flippedStr + ".png";
-    java.net.URL imgURL = getClass().getResource(path);
-    if (imgURL != null) {
-        javax.swing.ImageIcon icon = new javax.swing.ImageIcon(imgURL);
-java.awt.Image img = icon.getImage().getScaledInstance(label.getWidth(), label.getHeight(), java.awt.Image.SCALE_SMOOTH);
-label.setIcon(new javax.swing.ImageIcon(img));
-    } else {
-        System.out.println("IMAGE NOT FOUND: " + path);
+    /**
+     * Sets the GameClient instance used to send moves over the network.
+     * @param client the connected GameClient
+     */
+    public void setGameClient(GameClient client) {
+        this.gameClient = client;
     }
-}
-
-public void applyOpponentMove(int from, int to) {
-    board.movePiece(from, to, board.getCurrentPlayer());
-    
-    barLabel1.setText("W: " + board.getBarPlayer1());
-    barLabel2.setText("B: " + board.getBarPlayer2());
-    
-    int fromPieces = Math.abs(board.getPoint(from));
-    String fromPieceColor = board.getPoint(from) > 0 ? "white" : "black";
-    
-    int toPieces = Math.abs(board.getPoint(to));
-    String toPieceColor = board.getPoint(to) > 0 ? "white" : "black";
-    
-    // هنحدث الصور بعدين
-    board.switchPlayer();
-}
-
-public void setGameClient(GameClient client) {
-    this.gameClient = client;
-}
-
-
 }
