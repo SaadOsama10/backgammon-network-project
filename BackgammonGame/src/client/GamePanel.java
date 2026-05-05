@@ -1100,12 +1100,24 @@ if (board.hasWon(player)) {
      * @param to destination point index (0-23)
      */
     public void applyOpponentMove(int from, int to) {
-        board.movePiece(from, to, board.getCurrentPlayer());
-        barLabel1.setText("W: " + board.getBarPlayer1());
-        barLabel2.setText("B: " + board.getBarPlayer2());
-        board.switchPlayer();
-    }
+    board.movePiece(from, to, board.getCurrentPlayer());
     
+    barLabel1.setText("W: " + board.getBarPlayer1());
+    barLabel2.setText("B: " + board.getBarPlayer2());
+    
+    int fromPieces = Math.abs(board.getPoint(from));
+    String fromPieceColor = board.getPoint(from) > 0 ? "white" : "black";
+    
+    int toPieces = Math.abs(board.getPoint(to));
+    String toPieceColor = board.getPoint(to) > 0 ? "white" : "black";
+    
+    javax.swing.SwingUtilities.invokeLater(() -> {
+        updatePointImage(getPointLabel(from), triColors[from], fromPieces == 0 ? "white" : fromPieceColor, fromPieces, flippedPoints[from]);
+        updatePointImage(getPointLabel(to), triColors[to], toPieces == 0 ? "white" : toPieceColor, toPieces, flippedPoints[to]);
+    });
+    
+    board.switchPlayer();
+}
     /**
      * Sets the GameClient instance used to send moves over the network.
      * @param client the connected GameClient
@@ -1113,4 +1125,34 @@ if (board.hasWon(player)) {
     public void setGameClient(GameClient client) {
         this.gameClient = client;
     }
+    
+    private javax.swing.JLabel getPointLabel(int index) {
+    switch (index) {
+        case 0: return point1;
+        case 1: return point2;
+        case 2: return point3;
+        case 3: return point4;
+        case 4: return point5;
+        case 5: return point6;
+        case 6: return point7;
+        case 7: return point8;
+        case 8: return point9;
+        case 9: return point10;
+        case 10: return point11;
+        case 11: return point12;
+        case 12: return point13;
+        case 13: return point14;
+        case 14: return point15;
+        case 15: return point16;
+        case 16: return point17;
+        case 17: return point18;
+        case 18: return point19;
+        case 19: return point20;
+        case 20: return point21;
+        case 21: return point22;
+        case 22: return point23;
+        case 23: return point24;
+        default: return null;
+    }
+}
 }
