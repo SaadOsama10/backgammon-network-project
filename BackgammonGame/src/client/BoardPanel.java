@@ -80,6 +80,7 @@ public class BoardPanel extends javax.swing.JPanel {
     }
     
     String serverIP = javax.swing.JOptionPane.showInputDialog(this, "Enter server IP:", "localhost");
+        System.out.println(serverIP);
     if (serverIP == null) return;
     
     javax.swing.JFrame frame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
