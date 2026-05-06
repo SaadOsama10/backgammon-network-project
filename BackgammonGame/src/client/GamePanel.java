@@ -1117,6 +1117,17 @@ if (board.hasWon(player)) {
     });
     
     board.switchPlayer();
+    
+    javax.swing.SwingUtilities.invokeLater(() -> {
+    java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+    if (window instanceof javax.swing.JFrame) {
+        ((javax.swing.JFrame) window).setTitle(
+            board.getCurrentPlayer() == 1 ?
+            "Backgammon - White's Turn ⚪" :
+            "Backgammon - Black's Turn ⚫"
+        );
+    }
+});
 }
     /**
      * Sets the GameClient instance used to send moves over the network.
