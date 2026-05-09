@@ -89,6 +89,7 @@ public class BoardPanel extends javax.swing.JPanel {
     
     GamePanel gamePanel = new GamePanel();
     GameClient client = new GameClient(serverIP, gamePanel);
+    gamePanel.setPlayerNumber(client.getPlayerNumber());
     gamePanel.setGameClient(client);
     
     frame.getContentPane().add(gamePanel, java.awt.BorderLayout.CENTER);
