@@ -17,6 +17,7 @@ public class GamePanel extends javax.swing.JPanel {
     private int selectedPointIndex = -1;
     private boolean diceRolled = false;
     private GameClient gameClient;
+    private int myPlayerNumber = 0;
 
     
     // ألوان المثلثات (24 مثلث)
@@ -552,10 +553,18 @@ private boolean[] flippedPoints = {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        System.out.println("diceRolled: " + diceRolled + " myPlayer: " + myPlayerNumber + " current: " + board.getCurrentPlayer());
+
         if (diceRolled) {
         javax.swing.JOptionPane.showMessageDialog(this, "You already rolled! Make your move first!");
         return;
     }
+        
+        if (myPlayerNumber != 0 && myPlayerNumber != board.getCurrentPlayer()) {
+        javax.swing.JOptionPane.showMessageDialog(this, "It's not your turn!");
+        return;
+    }
+        
     currentDice = board.rollDice();
     diceRolled = true;
     jLabel51.setText(" " + currentDice[0] + " - " + currentDice[1]);
@@ -682,19 +691,23 @@ private boolean[] flippedPoints = {
     }//GEN-LAST:event_point24MouseClicked
 
     private void barLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_barLabel1MouseClicked
-        if (board.getCurrentPlayer() == 1 && board.getBarPlayer1() > 0) {
-    selectedLabel = barLabel1;
-    selectedPointIndex = -1; 
-    barLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
-}
+        // Only allow Player 1 to select their own bar pieces
+    if (myPlayerNumber != 0 && myPlayerNumber != 1) return;
+    if (board.getCurrentPlayer() == 1 && board.getBarPlayer1() > 0) {
+        selectedLabel = barLabel1;
+        selectedPointIndex = -1;
+        barLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
+    }
     }//GEN-LAST:event_barLabel1MouseClicked
 
     private void barLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_barLabel2MouseClicked
-        if (board.getCurrentPlayer() == 2 && board.getBarPlayer2() > 0) {
-    selectedLabel = barLabel2;
-    selectedPointIndex = -1;
-    barLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
-}
+        // Only allow Player 2 to select their own bar pieces
+    if (myPlayerNumber != 0 && myPlayerNumber != 2) return;
+    if (board.getCurrentPlayer() == 2 && board.getBarPlayer2() > 0) {
+        selectedLabel = barLabel2;
+        selectedPointIndex = -1;
+        barLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
+    }
     }//GEN-LAST:event_barLabel2MouseClicked
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
@@ -815,6 +828,10 @@ if (board.hasWon(player)) {
      * @param pointIndex the point number (1-24)
      */
     public void pointClicked(javax.swing.JLabel label, int pointIndex) {
+        System.out.println("myPlayerNumber: " + myPlayerNumber + " currentPlayer: " + board.getCurrentPlayer() + " selectedLabel: " + (selectedLabel != null));
+
+        
+
         
         // Clear the border from the previously selected point
         if (selectedLabel != null) {
@@ -830,6 +847,16 @@ if (board.hasWon(player)) {
         
         // If a source point is already selected, this click is the destination
         if (selectedLabel != null) {
+            
+            
+            // Prevent a player from making a move when it's the opponent's turn
+            // myPlayerNumber is 0 when playing locally (no server), so skip this check
+            if (myPlayerNumber != 0 && myPlayerNumber != board.getCurrentPlayer()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "It's not your turn!");
+                selectedLabel = null;
+                selectedPointIndex = -1;
+                return;
+            }
             
             // Player must roll the dice before making a move
             if (!diceRolled) {
@@ -912,6 +939,9 @@ if (board.hasWon(player)) {
                 
                 // Apply the bar entry and update the UI
                 board.enterFromBar(to, player);
+                if (gameClient != null) {
+                gameClient.sendMove(-1, to); 
+}
                 barLabel1.setText("W: " + board.getBarPlayer1());
                 barLabel2.setText("B: " + board.getBarPlayer2());
                 int toPieces = Math.abs(board.getPoint(to));
@@ -1058,6 +1088,11 @@ if (board.hasWon(player)) {
                 );
             }
             
+            // Prevent opponent from selecting pieces during the other player's turn
+if (myPlayerNumber != 0 && myPlayerNumber != board.getCurrentPlayer()) {
+    return;
+}
+            
             selectedLabel = null;
             selectedPointIndex = -1;
             return;
@@ -1099,35 +1134,52 @@ if (board.hasWon(player)) {
      * @param from source point index (0-23)
      * @param to destination point index (0-23)
      */
-    public void applyOpponentMove(int from, int to) {
-    board.movePiece(from, to, board.getCurrentPlayer());
+   public void applyOpponentMove(int from, int to) {
     
-    barLabel1.setText("W: " + board.getBarPlayer1());
-    barLabel2.setText("B: " + board.getBarPlayer2());
-    
-    int fromPieces = Math.abs(board.getPoint(from));
-    String fromPieceColor = board.getPoint(from) > 0 ? "white" : "black";
-    
-    int toPieces = Math.abs(board.getPoint(to));
-    String toPieceColor = board.getPoint(to) > 0 ? "white" : "black";
-    
-    javax.swing.SwingUtilities.invokeLater(() -> {
-        updatePointImage(getPointLabel(from), triColors[from], fromPieces == 0 ? "white" : fromPieceColor, fromPieces, flippedPoints[from]);
-        updatePointImage(getPointLabel(to), triColors[to], toPieces == 0 ? "white" : toPieceColor, toPieces, flippedPoints[to]);
-    });
+    if (from == -1) {
+        // Bar entry من الخصم
+        board.enterFromBar(to, board.getCurrentPlayer());
+        
+        barLabel1.setText("W: " + board.getBarPlayer1());
+        barLabel2.setText("B: " + board.getBarPlayer2());
+        
+        int toPieces = Math.abs(board.getPoint(to));
+        String toPieceColor = board.getPoint(to) > 0 ? "white" : "black";
+        
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            updatePointImage(getPointLabel(to), triColors[to], toPieces == 0 ? "white" : toPieceColor, toPieces, flippedPoints[to]);
+        });
+        
+    } else {
+        // حركة عادية
+        board.movePiece(from, to, board.getCurrentPlayer());
+        
+        barLabel1.setText("W: " + board.getBarPlayer1());
+        barLabel2.setText("B: " + board.getBarPlayer2());
+        
+        int fromPieces = Math.abs(board.getPoint(from));
+        String fromPieceColor = board.getPoint(from) > 0 ? "white" : "black";
+        int toPieces = Math.abs(board.getPoint(to));
+        String toPieceColor = board.getPoint(to) > 0 ? "white" : "black";
+        
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            updatePointImage(getPointLabel(from), triColors[from], fromPieces == 0 ? "white" : fromPieceColor, fromPieces, flippedPoints[from]);
+            updatePointImage(getPointLabel(to), triColors[to], toPieces == 0 ? "white" : toPieceColor, toPieces, flippedPoints[to]);
+        });
+    }
     
     board.switchPlayer();
     
     javax.swing.SwingUtilities.invokeLater(() -> {
-    java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
-    if (window instanceof javax.swing.JFrame) {
-        ((javax.swing.JFrame) window).setTitle(
-            board.getCurrentPlayer() == 1 ?
-            "Backgammon - White's Turn ⚪" :
-            "Backgammon - Black's Turn ⚫"
-        );
-    }
-});
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (window instanceof javax.swing.JFrame) {
+            ((javax.swing.JFrame) window).setTitle(
+                board.getCurrentPlayer() == 1 ?
+                "Backgammon - White's Turn ⚪" :
+                "Backgammon - Black's Turn ⚫"
+            );
+        }
+    });
 }
     /**
      * Sets the GameClient instance used to send moves over the network.
@@ -1166,4 +1218,16 @@ if (board.hasWon(player)) {
         default: return null;
     }
 }
+  
+    
+    
+/**
+ * Sets the player number assigned by the server (1 or 2).
+ * Used to prevent a player from moving the opponent's pieces.
+ * @param number the player number (1 or 2)
+ */
+public void setPlayerNumber(int number) {
+    this.myPlayerNumber = number;
+}
+
 }
