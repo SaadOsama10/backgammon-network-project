@@ -553,7 +553,6 @@ private boolean[] flippedPoints = {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        System.out.println("diceRolled: " + diceRolled + " myPlayer: " + myPlayerNumber + " current: " + board.getCurrentPlayer());
 
         if (diceRolled) {
         javax.swing.JOptionPane.showMessageDialog(this, "You already rolled! Make your move first!");
@@ -828,7 +827,6 @@ if (board.hasWon(player)) {
      * @param pointIndex the point number (1-24)
      */
     public void pointClicked(javax.swing.JLabel label, int pointIndex) {
-        System.out.println("myPlayerNumber: " + myPlayerNumber + " currentPlayer: " + board.getCurrentPlayer() + " selectedLabel: " + (selectedLabel != null));
 
         
 
