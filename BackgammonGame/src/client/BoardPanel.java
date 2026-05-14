@@ -88,14 +88,18 @@ public class BoardPanel extends javax.swing.JPanel {
     frame.getContentPane().setLayout(new java.awt.BorderLayout());
     
     GamePanel gamePanel = new GamePanel();
-    GameClient client = new GameClient(serverIP, gamePanel);
-    gamePanel.setPlayerNumber(client.getPlayerNumber());
-    gamePanel.setGameClient(client);
-    
-    frame.getContentPane().add(gamePanel, java.awt.BorderLayout.CENTER);
-    frame.setTitle("Backgammon - White's Turn ⚪");
-    frame.revalidate();
-    frame.repaint();
+frame.getContentPane().add(gamePanel, java.awt.BorderLayout.CENTER);
+frame.setTitle("Waiting for opponent...");
+frame.revalidate();
+frame.repaint();
+
+GameClient client = new GameClient(serverIP, gamePanel);
+gamePanel.setPlayerNumber(client.getPlayerNumber());
+gamePanel.setGameClient(client);
+
+frame.setTitle("Backgammon - White's Turn ⚪");
+frame.revalidate();
+frame.repaint();
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
