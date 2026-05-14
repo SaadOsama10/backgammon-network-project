@@ -1,9 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package client;
-
 import java.io.*;
 import java.net.*;
 
@@ -33,6 +28,7 @@ public class GameClient {
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("Server connection:" + socket.isConnected());
+            
             // Read the first message from server to get player number
             String firstMessage = in.readLine();
             if (firstMessage.startsWith("PLAYER:")) {
@@ -45,17 +41,25 @@ public class GameClient {
                 try {
                     String message;
                     while ((message = in.readLine()) != null) {
-                        // Parse move message format: MOVE:from:to
+                        // Parse move message format: MOVE:from:to:movesLeft
                         if (message.startsWith("MOVE:")) {
                             String[] parts = message.split(":");
                             int from = Integer.parseInt(parts[1]);
                             int to = Integer.parseInt(parts[2]);
+                            int opponentMovesLeft = Integer.parseInt(parts[3]);
                             // Apply the opponent's move on the local board
-                            gamePanel.applyOpponentMove(from, to);
+                            gamePanel.applyOpponentMove(from, to, opponentMovesLeft);
                         }
                     }
                 } catch (IOException e) {
                     System.out.println("Disconnected from server");
+                    javax.swing.SwingUtilities.invokeLater(() -> {
+                        javax.swing.JOptionPane.showMessageDialog(null, 
+                            "Opponent disconnected! Game over.", 
+                            "Disconnected", 
+                            javax.swing.JOptionPane.ERROR_MESSAGE);
+                        System.exit(0);
+                    });
                 }
             }).start();
             
@@ -65,12 +69,13 @@ public class GameClient {
     }
     
     /**
-     * Sends a move to the server in the format MOVE:from:to
+     * Sends a move to the server in the format MOVE:from:to:movesLeft
      * @param from source point index (0-23)
      * @param to destination point index (0-23)
+     * @param movesLeft number of moves remaining after this move
      */
-    public void sendMove(int from, int to) {
-        out.println("MOVE:" + from + ":" + to);
+    public void sendMove(int from, int to, int movesLeft) {
+        out.println("MOVE:" + from + ":" + to + ":" + movesLeft);
     }
     
     /**
@@ -79,4 +84,6 @@ public class GameClient {
     public int getPlayerNumber() {
         return playerNumber;
     }
+    
+    
 }
