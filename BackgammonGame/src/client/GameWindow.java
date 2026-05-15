@@ -28,7 +28,11 @@ public class GameWindow extends javax.swing.JFrame {
     setSize(1000, 730);
     setLocationRelativeTo(null);
     setVisible(true);
+    
+    
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
