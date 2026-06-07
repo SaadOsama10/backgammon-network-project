@@ -109,6 +109,7 @@ private boolean[] flippedPoints = {
         barLabel2 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(92, 61, 30));
         setToolTipText("255");
@@ -568,7 +569,19 @@ private boolean[] flippedPoints = {
             }
         });
         jPanel2.add(jButton1);
-        jButton1.setBounds(-2, 140, 52, 30);
+        jButton1.setBounds(0, 120, 52, 30);
+
+        jButton4.setBackground(new java.awt.Color(255, 100, 100));
+        jButton4.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jButton4.setForeground(new java.awt.Color(0, 0, 0));
+        jButton4.setText("Out");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton4);
+        jButton4.setBounds(0, 160, 52, 30);
 
         add(jPanel2);
         jPanel2.setBounds(478, 20, 50, 660);
@@ -833,6 +846,22 @@ if (board.hasWon(player)) {
     }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        int choice = javax.swing.JOptionPane.showConfirmDialog(this,
+    "Are you sure you want to resign?",
+    "Resign",
+    javax.swing.JOptionPane.YES_NO_OPTION);
+if (choice == javax.swing.JOptionPane.YES_OPTION) {
+    if (gameClient != null) {
+        gameClient.sendMove(-4, -4, 0); // -4 = resign
+    }
+    new Thread(() -> {
+    try { Thread.sleep(500); } catch (Exception e) {}
+    System.exit(0);
+}).start();
+}
+    }//GEN-LAST:event_jButton4ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel barLabel1;
@@ -840,6 +869,7 @@ if (board.hasWon(player)) {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
@@ -1214,6 +1244,31 @@ if (board.hasWon(player)) {
      * @param to destination point index (0-23)
      */
    public void applyOpponentMove(int from, int to, int opponentMovesLeft) {
+       
+       
+       
+       if (from == -4) {
+    // Opponent resigned — show win dialog
+    javax.swing.SwingUtilities.invokeLater(() -> {
+        int choice = javax.swing.JOptionPane.showConfirmDialog(null,
+            "Opponent resigned! You win! 🎉\nPlay again?",
+            "Game Over",
+            javax.swing.JOptionPane.YES_NO_OPTION);
+        if (choice == javax.swing.JOptionPane.YES_OPTION) {
+            java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+            if (window instanceof javax.swing.JFrame) {
+                javax.swing.JFrame frame = (javax.swing.JFrame) window;
+                frame.getContentPane().removeAll();
+                frame.getContentPane().add(new BoardPanel());
+                frame.revalidate();
+                frame.repaint();
+            }
+        } else {
+            System.exit(0);
+        }
+    });
+    return;
+}
     
     if (from == -3) {
         // Opponent restarted the game — reset the board
@@ -1278,6 +1333,8 @@ if (board.hasWon(player)) {
             );
         }
     });
+    
+    
 }
     /**
      * Sets the GameClient instance used to send moves over the network.

@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package server;
-
 import java.io.*;
 import java.net.*;
 
@@ -19,7 +18,9 @@ public class GameServer {
     
     public static void main(String[] args) {
         try {
-            ServerSocket serverSocket = new ServerSocket(PORT);
+            ServerSocket serverSocket = new ServerSocket();
+            serverSocket.setReuseAddress(true);
+            serverSocket.bind(new java.net.InetSocketAddress(PORT));
             System.out.println("Server started! Waiting for players...");
             
             // Continuously accept new player connections
@@ -51,7 +52,8 @@ public class GameServer {
     /**
      * Handles a single game session between two players.
      * Acts as a relay — forwards each player's moves to the other.
-     * Uses two threads to handle both players simultaneously.
+     * Notifies the remaining player if the opponent disconnects.
+     * Does not send DISCONNECT if the opponent resigned.
      *
      * @param player1 socket connection of Player 1
      * @param player2 socket connection of Player 2
@@ -70,28 +72,43 @@ public class GameServer {
         BufferedReader in1 = new BufferedReader(new InputStreamReader(player1.getInputStream()));
         BufferedReader in2 = new BufferedReader(new InputStreamReader(player2.getInputStream()));
         
+        // Track if a player resigned (no need to send DISCONNECT in that case)
+        boolean[] resigned = {false};
+
         // Thread to receive moves from Player 1 and forward to Player 2
+        // If Player 1 disconnects, notify Player 2
         new Thread(() -> {
             try {
                 String message;
                 while ((message = in1.readLine()) != null) {
                     System.out.println("Player 1: " + message);
                     out2.println(message);
+                    if (message.equals("MOVE:-4:-4:0")) {
+                        resigned[0] = true;
+                        return;
+                    }
                 }
             } catch (IOException e) {
                 System.out.println("Player 1 disconnected");
             }
+            if (!resigned[0]) out2.println("DISCONNECT:");
         }).start();
         
         // Receive moves from Player 2 and forward to Player 1
+        // If Player 2 disconnects, notify Player 1
         try {
             String message;
             while ((message = in2.readLine()) != null) {
                 System.out.println("Player 2: " + message);
                 out1.println(message);
+                if (message.equals("MOVE:-4:-4:0")) {
+                    resigned[0] = true;
+                    return;
+                }
             }
         } catch (IOException e) {
             System.out.println("Player 2 disconnected");
         }
+        if (!resigned[0]) out1.println("DISCONNECT:");
     }
 }

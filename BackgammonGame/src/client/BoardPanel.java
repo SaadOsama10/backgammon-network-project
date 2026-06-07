@@ -72,34 +72,54 @@ public class BoardPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-           String playerName = jTextField1.getText();
+    String playerName = jTextField1.getText();
     
     if (playerName.trim().isEmpty()) {
         javax.swing.JOptionPane.showMessageDialog(this, "Please enter your name!");
         return;
     }
+    if (playerName.trim().length() < 3) {
+    javax.swing.JOptionPane.showMessageDialog(this, "Name must be at least 3 characters!");
+    return;
+}
     
     String serverIP = javax.swing.JOptionPane.showInputDialog(this, "Enter server IP:", "localhost");
-        System.out.println(serverIP);
     if (serverIP == null) return;
+    
+    // Validate IP format
+    if (!serverIP.matches("^(localhost|\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})$")) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Invalid IP address!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        return;
+    }
     
     javax.swing.JFrame frame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
     frame.getContentPane().removeAll();
     frame.getContentPane().setLayout(new java.awt.BorderLayout());
     
     GamePanel gamePanel = new GamePanel();
-frame.getContentPane().add(gamePanel, java.awt.BorderLayout.CENTER);
-frame.setTitle("Waiting for opponent...");
-frame.revalidate();
-frame.repaint();
+    frame.getContentPane().add(gamePanel, java.awt.BorderLayout.CENTER);
+    frame.setTitle("Waiting for opponent...");
+    frame.revalidate();
+    frame.repaint();
+    
+    try {
+        GameClient client = new GameClient(serverIP, gamePanel);
+        gamePanel.setPlayerNumber(client.getPlayerNumber());
+        gamePanel.setGameClient(client);
+        frame.setTitle("Backgammon - White's Turn ⚪");
+        frame.revalidate();
+        frame.repaint();
+    } catch (Exception e) {
+        javax.swing.JOptionPane.showMessageDialog(this, 
+            "Could not connect to server!\nCheck the IP address.", 
+            "Connection Error", 
+            javax.swing.JOptionPane.ERROR_MESSAGE);
+        frame.getContentPane().removeAll();
+        frame.getContentPane().add(new BoardPanel());
+        frame.revalidate();
+        frame.repaint();
+    }
 
-GameClient client = new GameClient(serverIP, gamePanel);
-gamePanel.setPlayerNumber(client.getPlayerNumber());
-gamePanel.setGameClient(client);
-
-frame.setTitle("Backgammon - White's Turn ⚪");
-frame.revalidate();
-frame.repaint();
 
     }//GEN-LAST:event_jButton1ActionPerformed
 

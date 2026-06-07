@@ -49,17 +49,30 @@ public class GameClient {
                             int opponentMovesLeft = Integer.parseInt(parts[3]);
                             // Apply the opponent's move on the local board
                             gamePanel.applyOpponentMove(from, to, opponentMovesLeft);
+                        } else if (message.startsWith("DISCONNECT:")) {
+                            // Opponent disconnected — show win dialog
+                            javax.swing.SwingUtilities.invokeLater(() -> {
+                                int choice = javax.swing.JOptionPane.showConfirmDialog(null,
+                                    "Opponent disconnected! You win! 🎉\nPlay again?",
+                                    "Game Over",
+                                    javax.swing.JOptionPane.YES_NO_OPTION);
+                                if (choice == javax.swing.JOptionPane.YES_OPTION) {
+                                    java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(gamePanel);
+                                    if (window instanceof javax.swing.JFrame) {
+                                        javax.swing.JFrame frame = (javax.swing.JFrame) window;
+                                        frame.getContentPane().removeAll();
+                                        frame.getContentPane().add(new BoardPanel());
+                                        frame.revalidate();
+                                        frame.repaint();
+                                    }
+                                } else {
+                                    System.exit(0);
+                                }
+                            });
                         }
                     }
                 } catch (IOException e) {
                     System.out.println("Disconnected from server");
-                    javax.swing.SwingUtilities.invokeLater(() -> {
-                        javax.swing.JOptionPane.showMessageDialog(null, 
-                            "Opponent disconnected! Game over.", 
-                            "Disconnected", 
-                            javax.swing.JOptionPane.ERROR_MESSAGE);
-                        System.exit(0);
-                    });
                 }
             }).start();
             
@@ -84,6 +97,4 @@ public class GameClient {
     public int getPlayerNumber() {
         return playerNumber;
     }
-    
-    
 }
