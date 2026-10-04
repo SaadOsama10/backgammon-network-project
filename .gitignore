@@ -4,6 +4,7 @@ dist/
 **/nbproject/private/
 *.class
 *.jar
+!BackgammonGame/lib/*.jar
 
 # IDE
 .idea/
