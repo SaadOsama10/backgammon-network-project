@@ -19,6 +19,10 @@ public class ImageGenerator {
      * Entry point - generates all 48 triangle images and saves them to the images folder.
      */
     public static void main(String[] args) {
+        // Output folder: first argument, or src/images relative to the project folder
+        // (where the game loads the images from as classpath resources).
+        outputDir = new File(args.length > 0 ? args[0] : "src/images");
+        outputDir.mkdirs();
         try {
             // Generate all combinations for piece counts 0 to 5
             for (int i = 0; i <= 5; i++) {
@@ -45,6 +49,8 @@ public class ImageGenerator {
      * @param pieces     number of pieces to draw on the triangle (0-5)
      * @param flipped    if true, the triangle points upward (used for bottom triangles)
      */
+    private static File outputDir = new File("src/images");
+
     static void generateTriangle(String triColor, String pieceColor, int pieces, boolean flipped) throws Exception {
         
         // Create a 70x250 transparent image
@@ -95,8 +101,8 @@ public class ImageGenerator {
         
         // Build the output file path and save the image
         String flippedStr = flipped ? "_flipped" : "";
-        String path = System.getProperty("user.home") + "/Desktop/backgammon-network-project/BackgammonGame/images/triangle_"
-                + triColor + "_" + pieceColor + "_" + pieces + flippedStr + ".png";
+        String path = new File(outputDir, "triangle_"
+                + triColor + "_" + pieceColor + "_" + pieces + flippedStr + ".png").getPath();
         ImageIO.write(img, "PNG", new File(path));
         System.out.println("Saved: " + path);
     }
