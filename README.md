@@ -23,9 +23,9 @@ Two players on different machines connect to a central server and play a complet
 
 - **Online multiplayer over TCP**, with players matched in pairs and **multiple simultaneous games**
 - **Complete rules:** dice (each die is used once; doubles give four moves), move direction and distance validation, blocked points (2+ opponent pieces) and a 5-pieces-per-point limit
-- **Hitting and the bar:** landing on a single opponent piece sends it to the bar, and bar pieces must re-enter before any other move
-- **Bearing off** once all 15 pieces are home, and **win detection**
-- **Turn enforcement:** each client only lets its own side move on its turn, and a turn is passed automatically when no entry is possible
+- **Hitting and the bar:** landing on a single opponent piece sends it to the bar, and bar pieces must re-enter (a die of *d* enters on point 25 − *d* for White, *d* for Black) before any other move
+- **Bearing off** once all 15 pieces are home, using the exact die (or a higher one from the furthest-back piece), and **win detection**
+- **Turn enforcement:** each client only lets its own side move on its turn, and the turn passes automatically on both clients when no legal move remains
 - **Restart** (both boards reset together), **resign** and **opponent-disconnect** notifications
 - **Image-based board:** 48 pre-rendered triangle images (triangle colour × piece colour × 0–5 pieces × orientation), generated with `Graphics2D`
 - **Configurable connection:** server port and client host/port via command-line options or environment variables
@@ -63,6 +63,7 @@ Messages are newline-terminated text on one TCP connection per player:
 | `MOVE:from:-2:movesLeft` | Bearing a piece off |
 | `MOVE:-3:-3:0` | Restart request (both boards reset) |
 | `MOVE:-4:-4:0` | Resign (the opponent is shown the win dialog) |
+| `MOVE:-5:-5:0` | Pass: the mover has no legal move left, so the turn switches |
 | `DISCONNECT:` | Server → client: the opponent's connection closed |
 
 ```mermaid
@@ -213,18 +214,19 @@ Stop or terminate the instance when you're done; the server has no authenticatio
 Changes made after the original course version:
 
 - **Each die can only be used once.** Moves used to be checked against either die value without marking the die as spent, so a 4-2 roll could be played as 4 + 4. The client now tracks which die was played (normal moves and bar entry) and only accepts the remaining one; doubles still give four moves.
+- **Correct bar entry.** The entry point was computed one point off (`23 − to` / `to` instead of `24 − to` / `to + 1`), so a 6 could never re-enter and the last point needed a die of 0. A die of *d* now enters White on point 25 − *d* and Black on point *d*.
+- **Bearing off uses the dice.** **BO** used to check only that all pieces were home. It now needs the exact die for the selected piece, or a higher die when no piece is further back, and spends that die. A rejected attempt clears the selection.
+- **Turn passing stays in sync.** When no move was possible, the old "Turn lost" path switched the turn on the local client only, so the opponent kept waiting and the game deadlocked. The client now checks for any legal move after each roll and each move (bar entry, normal moves and bearing off). If none remains, it passes the turn and sends `MOVE:-5:-5:0` so both boards switch together.
 - **Responsive while waiting for an opponent.** Connecting blocked the Swing UI thread until the server paired the players, freezing the first player's window. The connection now runs in a background `SwingWorker`; a "Waiting for opponent..." overlay blocks board input until a side is assigned.
 - **Connection errors are reported.** A failed connection used to be swallowed silently; the client now shows *Could not connect to server!* and returns to the start screen.
 - **Clean "RD" label.** Removed an invisible Arabic diacritic (U+064D) that preceded the dice button's label (in both `GamePanel.java` and the NetBeans `.form`).
 - **Repository and build:** proper `.gitignore`, duplicate image folder removed, configurable host/port, bundled `AbsoluteLayout.jar` so the project builds without NetBeans, and a portable output path for `ImageGenerator`.
 
-These fixes were verified with an automated local game (server + two clients): the UI thread stayed responsive while waiting, reusing a spent die was rejected with the board unchanged, doubles gave four moves, and resign/game-end and the unreachable-server path worked.
+These fixes were verified with an automated local game (server + two clients): the UI thread stayed responsive while waiting, reusing a spent die was rejected with the board unchanged, doubles gave four moves, and resign/game-end and the unreachable-server path worked. Separate rules tests drove the real `GamePanel` through every bar entry (dice 1–6, both colours), exact, higher and rejected bear-offs, and automatic passes; a socket test confirmed the server relays the pass message both ways.
 
 ## Known Limitations
 
 - **Clients are trusted.** All rules run on the clients and the server only relays messages. Dice rolls aren't sent to the opponent, so a modified client could cheat.
-- **Bar entry is off by one.** The entry point is computed as `23 − to` for White and `to` for Black instead of `24 − to` / `to + 1`, so a die of 6 can never re-enter and point 24 (White) / point 1 (Black) need a "0". Left as in the original rules code.
-- **Bearing off ignores the dice.** The **BO** button checks only that all pieces are home, not the dice values.
 - **No security or recovery.** Plain-text protocol with no authentication or encryption; no reconnect after a dropped connection; resigning closes the client.
 - **Server resources.** Sockets of finished games aren't explicitly closed, and the server keeps no game state, so a game can't be resumed.
 
