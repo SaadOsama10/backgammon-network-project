@@ -14,14 +14,15 @@ import java.net.*;
 public class GameServer {
     
     // Port number the server listens on
-    private static final int PORT = 6000;
+    private static final int DEFAULT_PORT = 6000;
     
     public static void main(String[] args) {
+        int port = resolvePort(args);
         try {
             ServerSocket serverSocket = new ServerSocket();
             serverSocket.setReuseAddress(true);
-            serverSocket.bind(new java.net.InetSocketAddress(PORT));
-            System.out.println("Server started! Waiting for players...");
+            serverSocket.bind(new java.net.InetSocketAddress(port)); // all interfaces, so remote players can connect
+            System.out.println("Server started on port " + port + "! Waiting for players...");
             
             // Continuously accept new player connections
             while (true) {
@@ -110,5 +111,30 @@ public class GameServer {
             System.out.println("Player 2 disconnected");
         }
         if (!resigned[0]) out1.println("DISCONNECT:");
+    }
+
+    /**
+     * Port from "--port N", else the BACKGAMMON_PORT environment variable, else 6000.
+     */
+    private static int resolvePort(String[] args) {
+        String value = System.getenv("BACKGAMMON_PORT");
+        for (int i = 0; i < args.length - 1; i++) {
+            if (args[i].equals("--port")) {
+                value = args[i + 1];
+            }
+        }
+        if (value == null || value.trim().isEmpty()) {
+            return DEFAULT_PORT;
+        }
+        try {
+            int p = Integer.parseInt(value.trim());
+            if (p >= 1 && p <= 65535) {
+                return p;
+            }
+        } catch (NumberFormatException e) {
+            // fall through to the default
+        }
+        System.out.println("Invalid port '" + value + "', using " + DEFAULT_PORT);
+        return DEFAULT_PORT;
     }
 }

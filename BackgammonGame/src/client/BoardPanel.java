@@ -83,11 +83,13 @@ public class BoardPanel extends javax.swing.JPanel {
     return;
 }
     
-    String serverIP = javax.swing.JOptionPane.showInputDialog(this, "Enter server IP:", "localhost");
+    String serverIP = javax.swing.JOptionPane.showInputDialog(this, "Enter server IP:", ClientConfig.getHost());
     if (serverIP == null) return;
     
-    // Validate IP format
-    if (!serverIP.matches("^(localhost|\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})$")) {
+    serverIP = serverIP.trim();
+
+    // Validate IP / hostname format (localhost, IPv4 address or a host name such as an EC2 public DNS)
+    if (!serverIP.matches("^(localhost|\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?(\\.[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?)+)$")) {
         javax.swing.JOptionPane.showMessageDialog(this, "Invalid IP address!", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         return;
     }

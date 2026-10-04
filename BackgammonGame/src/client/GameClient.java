@@ -23,8 +23,8 @@ public class GameClient {
     public GameClient(String serverIP, GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         try {
-            // Connect to the server on port 6000
-            socket = new Socket(serverIP, 6000);
+            // Connect to the server on the configured port (default 6000)
+            socket = new Socket(serverIP, ClientConfig.getPort());
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("Server connection:" + socket.isConnected());
