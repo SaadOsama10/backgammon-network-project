@@ -611,30 +611,8 @@ if (currentDice[0] == currentDice[1]) {
     movesLeft = 2;
 }
 
-int player = board.getCurrentPlayer();
-if (player == 1 && board.getBarPlayer1() > 0) {
-    boolean allBlocked = true;
-    for (int i = 18; i < 24; i++) {
-        if (board.canEnterFromBar(i, player)) { allBlocked = false; break; }
-    }
-    if (allBlocked) {
-        javax.swing.JOptionPane.showMessageDialog(this, "All entry points blocked! Turn lost!");
-        board.switchPlayer();
-        diceRolled = false;
-        movesLeft = 0;
-    }
-} else if (player == 2 && board.getBarPlayer2() > 0) {
-    boolean allBlocked = true;
-    for (int i = 0; i < 6; i++) {
-        if (board.canEnterFromBar(i, player)) { allBlocked = false; break; }
-    }
-    if (allBlocked) {
-        javax.swing.JOptionPane.showMessageDialog(this, "All entry points blocked! Turn lost!");
-        board.switchPlayer();
-        diceRolled = false;
-        movesLeft = 0;
-    }
-}
+// No legal move with this roll (e.g. all entry points blocked): the turn passes
+passTurnIfNoLegalMove();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void point1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_point1MouseClicked
@@ -779,16 +757,37 @@ if (player == 1 && board.getBarPlayer1() > 0) {
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
        int player = board.getCurrentPlayer();
+if (myPlayerNumber != 0 && myPlayerNumber != player) {
+    javax.swing.JOptionPane.showMessageDialog(this, "It's not your turn!");
+    return;
+}
+if (!diceRolled || movesLeft <= 0) {
+    javax.swing.JOptionPane.showMessageDialog(this, "Roll the dice first!");
+    return;
+}
 if (!board.canBearOff(player)) {
     javax.swing.JOptionPane.showMessageDialog(this, "You can't bear off yet! Move all pieces to your home board first!");
     return;
 }
-if (selectedLabel == null) {
+if (selectedLabel == null || selectedPointIndex < 1) {
     javax.swing.JOptionPane.showMessageDialog(this, "Select a piece to bear off first!");
     return;
 }
 int from = selectedPointIndex - 1;
+if (player == 1 ? board.getPoint(from) <= 0 : board.getPoint(from) >= 0) {
+    javax.swing.JOptionPane.showMessageDialog(this, "Select one of your own pieces to bear off!");
+    clearSelection();
+    return;
+}
+// The die must match the point's distance; a higher die may bear off the furthest piece
+int bearDie = bearOffDie(player, from);
+if (bearDie == -1) {
+    javax.swing.JOptionPane.showMessageDialog(this, "Invalid bear off! Use dice numbers: " + availableDiceText());
+    clearSelection();
+    return;
+}
 board.bearOff(from, player);
+markDieUsed(bearDie);
 
 // Send bear off move to opponent
 if (gameClient != null) {
@@ -808,6 +807,7 @@ if (movesLeft <= 0) {
     diceRolled = false;
     movesLeft = 0;
 }
+passTurnIfNoLegalMove();
 
 if (board.hasWon(player)) {
     String winner = player == 1 ? "White ⚪" : "Black ⚫";
@@ -976,39 +976,6 @@ if (choice == javax.swing.JOptionPane.YES_OPTION) {
             // Handle re-entry from the Bar
             if (selectedPointIndex == -1) {
                 
-                // Check if all entry points are blocked — turn is lost
-                if (player == 1) {
-                    boolean allBlocked = true;
-                    for (int i = 18; i < 24; i++) {
-                        if (board.canEnterFromBar(i, player)) { allBlocked = false; break; }
-                    }
-                    if (allBlocked) {
-                        javax.swing.JOptionPane.showMessageDialog(this, "All entry points are blocked! Turn lost!");
-                        selectedLabel.setBorder(null);
-                        selectedLabel = null;
-                        selectedPointIndex = -1;
-                        board.switchPlayer();
-                        diceRolled = false;
-                        movesLeft = 0;
-                        return;
-                    }
-                } else {
-                    boolean allBlocked = true;
-                    for (int i = 0; i < 6; i++) {
-                        if (board.canEnterFromBar(i, player)) { allBlocked = false; break; }
-                    }
-                    if (allBlocked) {
-                        javax.swing.JOptionPane.showMessageDialog(this, "All entry points are blocked! Turn lost!");
-                        selectedLabel.setBorder(null);
-                        selectedLabel = null;
-                        selectedPointIndex = -1;
-                        board.switchPlayer();
-                        diceRolled = false;
-                        movesLeft = 0;
-                        return;
-                    }
-                }
-                
                 // Player 1 must enter into points 19-24, Player 2 into points 1-6
                 if (player == 1 && to < 18) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Enter from the Bar into points 19-24!");
@@ -1025,7 +992,7 @@ if (choice == javax.swing.JOptionPane.YES_OPTION) {
                 }
                 
                 // Validate the entry point matches the dice value
-                int diff = player == 1 ? (23 - to) : to;
+                int diff = player == 1 ? (24 - to) : (to + 1); // die d enters White at point 25-d, Black at point d
                 if (!isDieAvailable(Math.abs(diff))) {
                     javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Use dice numbers: " + availableDiceText());
                     selectedLabel.setBorder(null);
@@ -1065,6 +1032,7 @@ if (choice == javax.swing.JOptionPane.YES_OPTION) {
                     diceRolled = false;
                     movesLeft = 0;
                 }
+                passTurnIfNoLegalMove();
                 
                 // Check win condition after bar entry
                 if (board.hasWon(player)) {
@@ -1180,6 +1148,7 @@ if (choice == javax.swing.JOptionPane.YES_OPTION) {
                 diceRolled = false;
                 movesLeft = 0;
             }
+            passTurnIfNoLegalMove();
             
             // Check win condition after move
             if (board.hasWon(player)) {
@@ -1217,6 +1186,113 @@ if (choice == javax.swing.JOptionPane.YES_OPTION) {
         selectedPointIndex = pointIndex;
         label.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
     }
+    /** Dice values that can still be played this turn. */
+    private java.util.List<Integer> availableDiceValues() {
+        java.util.List<Integer> values = new java.util.ArrayList<>();
+        if (movesLeft <= 0) {
+            return values;
+        }
+        if (currentDice[0] == currentDice[1]) {
+            values.add(currentDice[0]);
+        } else {
+            if (!dieUsed[0]) values.add(currentDice[0]);
+            if (!dieUsed[1]) values.add(currentDice[1]);
+        }
+        return values;
+    }
+
+    /**
+     * Die value to use for bearing off the piece at board index 'from', or -1 if not allowed.
+     * The die must equal the distance to bear off; a higher die may be used only when the
+     * player has no pieces further from home than this one.
+     */
+    private int bearOffDie(int player, int from) {
+        int distance = player == 1 ? from + 1 : 24 - from;
+        if (isDieAvailable(distance)) {
+            return distance;
+        }
+        boolean furtherPieces = false;
+        if (player == 1) {
+            for (int i = from + 1; i < 6; i++) if (board.getPoint(i) > 0) furtherPieces = true;
+        } else {
+            for (int i = 18; i < from; i++) if (board.getPoint(i) < 0) furtherPieces = true;
+        }
+        if (furtherPieces) {
+            return -1;
+        }
+        int best = -1;
+        for (int d : availableDiceValues()) {
+            if (d > distance && (best == -1 || d < best)) best = d;
+        }
+        return best;
+    }
+
+    /** Whether the current player can make any legal move with the remaining dice. */
+    private boolean hasLegalMove(int player) {
+        java.util.List<Integer> dice = availableDiceValues();
+        if (dice.isEmpty()) {
+            return false;
+        }
+        int bar = player == 1 ? board.getBarPlayer1() : board.getBarPlayer2();
+        if (bar > 0) {
+            for (int d : dice) {
+                if (board.canEnterFromBar(player == 1 ? 24 - d : d - 1, player)) return true;
+            }
+            return false;
+        }
+        for (int d : dice) {
+            for (int from = 0; from < 24; from++) {
+                if (player == 1 ? board.getPoint(from) <= 0 : board.getPoint(from) >= 0) continue;
+                int to = player == 1 ? from - d : from + d;
+                if (to >= 0 && to < 24 && board.isValidMove(from, to, player)) return true;
+            }
+        }
+        if (board.canBearOff(player)) {
+            for (int from = 0; from < 24; from++) {
+                if (player == 1 ? board.getPoint(from) <= 0 : board.getPoint(from) >= 0) continue;
+                if (bearOffDie(player, from) != -1) return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * If it's this player's turn and the remaining dice can't be played, the turn passes:
+     * both clients switch (the opponent is told with MOVE:-5:-5:0).
+     */
+    private void passTurnIfNoLegalMove() {
+        int player = board.getCurrentPlayer();
+        if (!diceRolled || movesLeft <= 0) return;
+        if (myPlayerNumber != 0 && myPlayerNumber != player) return;
+        if (board.hasWon(player) || hasLegalMove(player)) return;
+        javax.swing.JOptionPane.showMessageDialog(this, "No legal moves with the remaining dice. Turn passes!");
+        board.switchPlayer();
+        diceRolled = false;
+        movesLeft = 0;
+        if (gameClient != null) {
+            gameClient.sendMove(-5, -5, 0); // -5 = pass
+        }
+        updateTurnTitle();
+    }
+
+    /** Clears the currently selected piece (and its highlight). */
+    private void clearSelection() {
+        if (selectedLabel != null) {
+            selectedLabel.setBorder(null);
+        }
+        selectedLabel = null;
+        selectedPointIndex = -1;
+    }
+
+    /** Shows whose turn it is in the window title. */
+    private void updateTurnTitle() {
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (window instanceof javax.swing.JFrame) {
+            ((javax.swing.JFrame) window).setTitle(
+                board.getCurrentPlayer() == 1 ? "Backgammon - White's Turn ⚪" : "Backgammon - Black's Turn ⚫");
+        }
+    }
+
     /**
      * Whether a die with this value can still be played this turn.
      * Doubles allow the value for all four moves (limited by movesLeft);
@@ -1312,6 +1388,12 @@ if (choice == javax.swing.JOptionPane.YES_OPTION) {
     return;
 }
     
+    if (from == -5) {
+        // Opponent had no legal move left, so their turn passes
+        board.switchPlayer();
+        javax.swing.SwingUtilities.invokeLater(this::updateTurnTitle);
+        return;
+    }
     if (from == -3) {
         // Opponent restarted the game — reset the board
         javax.swing.SwingUtilities.invokeLater(() -> resetGame());
