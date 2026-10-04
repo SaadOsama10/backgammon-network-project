@@ -22,7 +22,7 @@ Two players on different machines connect to a central server and play a complet
 ## Features
 
 - **Online multiplayer over TCP**, with players matched in pairs and **multiple simultaneous games**
-- **Complete rules:** dice (doubles give four moves), move direction and distance validation, blocked points (2+ opponent pieces) and a 5-pieces-per-point limit
+- **Complete rules:** dice (each die is used once; doubles give four moves), move direction and distance validation, blocked points (2+ opponent pieces) and a 5-pieces-per-point limit
 - **Hitting and the bar:** landing on a single opponent piece sends it to the bar, and bar pieces must re-enter before any other move
 - **Bearing off** once all 15 pieces are home, and **win detection**
 - **Turn enforcement:** each client only lets its own side move on its turn, and a turn is passed automatically when no entry is possible
@@ -74,9 +74,9 @@ sequenceDiagram
     B->>S: connect
     S-->>W: PLAYER:1
     S-->>B: PLAYER:2
-    Note over W: rolls 2-5, moves 13 → 8
-    W->>S: MOVE:12:7:1
-    S-->>B: MOVE:12:7:1
+    Note over W: rolls 1-1 (doubles: 4 moves), moves 24 → 23
+    W->>S: MOVE:23:22:3
+    S-->>B: MOVE:23:22:3
     Note over B: applies move, waits for its turn
     B->>S: MOVE:0:4:1
     S-->>W: MOVE:0:4:1
@@ -88,14 +88,17 @@ sequenceDiagram
 Real server log from the automated test game used for the screenshots below:
 
 ```text
-Server started on port 6100! Waiting for players...
+Server started on port 6101! Waiting for players...
 Player 1 connected!
 Player 2 connected! Starting game...
-Player 1: MOVE:12:7:1
-Player 1: MOVE:12:7:0
+Player 1: MOVE:23:22:3
+Player 1: MOVE:23:22:2
+Player 1: MOVE:22:21:1
+Player 1: MOVE:22:21:0
 Player 2: MOVE:0:4:1
-Player 2: MOVE:0:4:0
-Player 1: MOVE:23:21:1
+Player 2: MOVE:0:3:0
+Player 1: MOVE:21:17:1
+Player 1: MOVE:21:19:0
 ...
 Player 1: MOVE:-4:-4:0
 ```
@@ -108,6 +111,10 @@ Player 1: MOVE:-4:-4:0
 |:---:|:---:|
 | ![Start screen](docs/screenshots/lobby.png) | ![Connect dialog](docs/screenshots/connect-dialog.png) |
 
+| Waiting for an opponent (window stays responsive) | Reusing a spent die is rejected |
+|:---:|:---:|
+| ![Waiting for opponent](docs/screenshots/waiting-for-opponent.png) | ![Die already used](docs/screenshots/dice-reuse-rejected.png) |
+
 | Piece selected (gold highlight) | After the move |
 |:---:|:---:|
 | ![Piece selected](docs/screenshots/piece-selected.png) | ![After move](docs/screenshots/after-move.png) |
@@ -115,6 +122,10 @@ Player 1: MOVE:-4:-4:0
 | Mid-game | Game end (opponent resigned) |
 |:---:|:---:|
 | ![Mid-game](docs/screenshots/board-mid-game.png) | ![Game end](docs/screenshots/game-end-dialog.png) |
+
+| Server unreachable |
+|:---:|
+| ![Connection error](docs/screenshots/connection-error.png) |
 
 **Controls:** **RD** rolls the dice, **BO** bears off the selected piece, **RE** restarts, **Out** resigns. The **W:** / **B:** labels show (and select) the bar pieces, and the window title shows whose turn it is.
 
@@ -197,14 +208,25 @@ The client's `--host` value prefills the "Enter server IP" dialog, which accepts
 
 Stop or terminate the instance when you're done; the server has no authentication (see below).
 
+## Improvements
+
+Changes made after the original course version:
+
+- **Each die can only be used once.** Moves used to be checked against either die value without marking the die as spent, so a 4-2 roll could be played as 4 + 4. The client now tracks which die was played (normal moves and bar entry) and only accepts the remaining one; doubles still give four moves.
+- **Responsive while waiting for an opponent.** Connecting blocked the Swing UI thread until the server paired the players, freezing the first player's window. The connection now runs in a background `SwingWorker`; a "Waiting for opponent..." overlay blocks board input until a side is assigned.
+- **Connection errors are reported.** A failed connection used to be swallowed silently; the client now shows *Could not connect to server!* and returns to the start screen.
+- **Clean "RD" label.** Removed an invisible Arabic diacritic (U+064D) that preceded the dice button's label (in both `GamePanel.java` and the NetBeans `.form`).
+- **Repository and build:** proper `.gitignore`, duplicate image folder removed, configurable host/port, bundled `AbsoluteLayout.jar` so the project builds without NetBeans, and a portable output path for `ImageGenerator`.
+
+These fixes were verified with an automated local game (server + two clients): the UI thread stayed responsive while waiting, reusing a spent die was rejected with the board unchanged, doubles gave four moves, and resign/game-end and the unreachable-server path worked.
+
 ## Known Limitations
 
 - **Clients are trusted.** All rules run on the clients and the server only relays messages. Dice rolls aren't sent to the opponent, so a modified client could cheat.
-- **A die can be used twice.** Moves are checked against either die value, and the used die isn't marked as spent. With a 2-5 roll, both moves can be 5s (visible in the test log above: `MOVE:12:7` twice).
-- **First player's window freezes until an opponent joins.** The client waits for the server's `PLAYER:n` message on the Swing UI thread, so the first window stops responding until the second player connects.
+- **Bar entry is off by one.** The entry point is computed as `23 − to` for White and `to` for Black instead of `24 − to` / `to + 1`, so a die of 6 can never re-enter and point 24 (White) / point 1 (Black) need a "0". Left as in the original rules code.
+- **Bearing off ignores the dice.** The **BO** button checks only that all pieces are home, not the dice values.
 - **No security or recovery.** Plain-text protocol with no authentication or encryption; no reconnect after a dropped connection; resigning closes the client.
 - **Server resources.** Sockets of finished games aren't explicitly closed, and the server keeps no game state, so a game can't be resumed.
-- **Cosmetic:** the dice button's label contains a stray invisible character before "RD".
 
 ## Author
 
