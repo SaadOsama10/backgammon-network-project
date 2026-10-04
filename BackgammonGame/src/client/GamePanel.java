@@ -12,6 +12,7 @@ public class GamePanel extends javax.swing.JPanel {
     
     private int selectedPoint = -1; 
     private int[] currentDice = {0, 0}; 
+    private boolean[] dieUsed = {false, false}; // which of the two dice has been played this turn
     private game.BackgammonBoard board = new game.BackgammonBoard();
     private javax.swing.JLabel selectedLabel = null;
     private int selectedPointIndex = -1;
@@ -600,6 +601,7 @@ if (myPlayerNumber != 0 && myPlayerNumber != board.getCurrentPlayer()) {
 }
 
 currentDice = board.rollDice();
+dieUsed = new boolean[]{false, false};
 diceRolled = true;
 jLabel51.setText(" " + currentDice[0] + " - " + currentDice[1]);
 
@@ -1024,8 +1026,8 @@ if (choice == javax.swing.JOptionPane.YES_OPTION) {
                 
                 // Validate the entry point matches the dice value
                 int diff = player == 1 ? (23 - to) : to;
-                if (Math.abs(diff) != currentDice[0] && Math.abs(diff) != currentDice[1]) {
-                    javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Use dice numbers: " + currentDice[0] + " or " + currentDice[1]);
+                if (!isDieAvailable(Math.abs(diff))) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Use dice numbers: " + availableDiceText());
                     selectedLabel.setBorder(null);
                     selectedLabel = null;
                     selectedPointIndex = -1;
@@ -1043,6 +1045,7 @@ if (choice == javax.swing.JOptionPane.YES_OPTION) {
                 
                 // Apply the bar entry and update the UI
                 board.enterFromBar(to, player);
+                markDieUsed(Math.abs(diff));
                 if (gameClient != null) {
     gameClient.sendMove(-1, to, movesLeft - 1);
 }
@@ -1140,8 +1143,8 @@ if (choice == javax.swing.JOptionPane.YES_OPTION) {
             } else {
                 diff = to - from;
             }
-            if (Math.abs(diff) != currentDice[0] && Math.abs(diff) != currentDice[1]) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Use dice numbers: " + currentDice[0] + " or " + currentDice[1]);
+            if (!isDieAvailable(Math.abs(diff))) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Invalid move! Use dice numbers: " + availableDiceText());
                 selectedLabel = null;
                 selectedPointIndex = -1;
                 return;
@@ -1149,6 +1152,7 @@ if (choice == javax.swing.JOptionPane.YES_OPTION) {
             
             // Apply the move on the board
             board.movePiece(from, to, player);
+            markDieUsed(Math.abs(diff));
             
             // Send the move to the opponent via the server
             if (gameClient != null) {
@@ -1213,6 +1217,44 @@ if (choice == javax.swing.JOptionPane.YES_OPTION) {
         selectedPointIndex = pointIndex;
         label.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 215, 0), 2));
     }
+    /**
+     * Whether a die with this value can still be played this turn.
+     * Doubles allow the value for all four moves (limited by movesLeft);
+     * otherwise each of the two dice can be used only once.
+     */
+    private boolean isDieAvailable(int distance) {
+        if (currentDice[0] == currentDice[1]) {
+            return distance == currentDice[0];
+        }
+        return (!dieUsed[0] && currentDice[0] == distance) || (!dieUsed[1] && currentDice[1] == distance);
+    }
+
+    /** Marks the die used for a move of this distance as played (no-op for doubles). */
+    private void markDieUsed(int distance) {
+        if (currentDice[0] == currentDice[1]) {
+            return;
+        }
+        if (!dieUsed[0] && currentDice[0] == distance) {
+            dieUsed[0] = true;
+        } else if (!dieUsed[1] && currentDice[1] == distance) {
+            dieUsed[1] = true;
+        }
+    }
+
+    /** The dice values that can still be played, for error messages. */
+    private String availableDiceText() {
+        if (currentDice[0] == currentDice[1]) {
+            return String.valueOf(currentDice[0]);
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 2; i++) {
+            if (!dieUsed[i]) {
+                sb.append(sb.length() > 0 ? " or " : "").append(currentDice[i]);
+            }
+        }
+        return sb.toString();
+    }
+
     /**
      * Updates the image of a triangle point based on current piece count and colors.
      * Loads the corresponding PNG image from the images folder.
@@ -1388,6 +1430,7 @@ public void setPlayerNumber(int number) {
 public void resetGame() {
     board = new game.BackgammonBoard();
     diceRolled = false;
+    dieUsed = new boolean[]{false, false};
     movesLeft = 0;
     selectedLabel = null;
     selectedPointIndex = -1;
