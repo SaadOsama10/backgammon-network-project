@@ -1,3 +1,20 @@
-/BackgammonGame/nbproject/private/
-/BackgammonGame/build/
-/BackgammonGame/dist/
+# NetBeans / Ant build output
+build/
+dist/
+**/nbproject/private/
+*.class
+*.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# macOS
+.DS_Store
+
+# Secrets: never commit SSH keys or credentials (e.g. the EC2 key pair)
+*.pem
+*.key
+*.ppk
+.env
