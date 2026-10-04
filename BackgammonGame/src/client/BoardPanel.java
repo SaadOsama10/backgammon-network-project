@@ -103,28 +103,75 @@ public class BoardPanel extends javax.swing.JPanel {
     frame.setTitle("Waiting for opponent...");
     frame.revalidate();
     frame.repaint();
-    
-    try {
-        GameClient client = new GameClient(serverIP, gamePanel);
-        gamePanel.setPlayerNumber(client.getPlayerNumber());
-        gamePanel.setGameClient(client);
-        frame.setTitle("Backgammon - White's Turn ⚪");
-        frame.revalidate();
-        frame.repaint();
-    } catch (Exception e) {
-        javax.swing.JOptionPane.showMessageDialog(this, 
-            "Could not connect to server!\nCheck the IP address.", 
-            "Connection Error", 
-            javax.swing.JOptionPane.ERROR_MESSAGE);
-        frame.getContentPane().removeAll();
-        frame.getContentPane().add(new BoardPanel());
-        frame.revalidate();
-        frame.repaint();
-    }
+
+    // Block board input while waiting (the window itself stays responsive)
+    java.awt.Component previousGlassPane = frame.getGlassPane();
+    frame.setGlassPane(createWaitingOverlay());
+    frame.getGlassPane().setVisible(true);
+
+    final String host = serverIP;
+    // Connecting blocks until the server pairs us with an opponent, so do it off the Swing UI thread
+    new javax.swing.SwingWorker<GameClient, Void>() {
+        @Override
+        protected GameClient doInBackground() {
+            return new GameClient(host, gamePanel);
+        }
+
+        @Override
+        protected void done() {
+            frame.getGlassPane().setVisible(false);
+            frame.setGlassPane(previousGlassPane);
+            GameClient client = null;
+            try {
+                client = get();
+            } catch (Exception e) {
+                System.out.println("Connection failed: " + e.getMessage());
+            }
+            if (client != null && client.getPlayerNumber() != 0) {
+                gamePanel.setPlayerNumber(client.getPlayerNumber());
+                gamePanel.setGameClient(client);
+                frame.setTitle("Backgammon - White's Turn ⚪");
+                frame.revalidate();
+                frame.repaint();
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(frame, 
+                    "Could not connect to server!\nCheck the IP address.", 
+                    "Connection Error", 
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                frame.setTitle("Backgammon Game");
+                frame.getContentPane().removeAll();
+                frame.getContentPane().add(new BoardPanel());
+                frame.revalidate();
+                frame.repaint();
+            }
+        }
+    }.execute();
 
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
+
+    /**
+     * Semi-transparent overlay shown while waiting for an opponent; it swallows
+     * mouse clicks so the board can't be used before the server assigns a side.
+     */
+    private static javax.swing.JComponent createWaitingOverlay() {
+        javax.swing.JPanel overlay = new javax.swing.JPanel(new java.awt.GridBagLayout()) {
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                g.setColor(new java.awt.Color(0, 0, 0, 120));
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        overlay.setOpaque(false);
+        javax.swing.JLabel label = new javax.swing.JLabel("Waiting for opponent...");
+        label.setForeground(java.awt.Color.WHITE);
+        label.setFont(new java.awt.Font("Helvetica Neue", java.awt.Font.BOLD, 24));
+        overlay.add(label);
+        overlay.addMouseListener(new java.awt.event.MouseAdapter() { });
+        overlay.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() { });
+        return overlay;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
