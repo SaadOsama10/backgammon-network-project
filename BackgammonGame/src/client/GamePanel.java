@@ -506,7 +506,7 @@ private boolean[] flippedPoints = {
         jButton2.setBackground(new java.awt.Color(255, 215, 0));
         jButton2.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
         jButton2.setForeground(new java.awt.Color(0, 0, 0));
-        jButton2.setText("ٍRD");
+        jButton2.setText("RD");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton2MouseClicked(evt);
