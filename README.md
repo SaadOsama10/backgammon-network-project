@@ -13,6 +13,14 @@
 
 Term project for **Computer Network Concepts** at Fatih Sultan Mehmet Vakıf University (FSMVU), Spring 2026.
 
+<p align="center">
+  <a href="https://saadosama10.github.io/backgammon-network-project/play/"><img src="https://img.shields.io/badge/%F0%9F%8E%B2_Play_in_your_browser-local_2--player-7aa2f7?style=for-the-badge" alt="Play in your browser (local 2-player)" /></a>
+</p>
+
+<p align="center"><img src="docs/screenshots/local-demo.gif" width="720" alt="Browser demo: starting a local 2-player game and playing a few moves for both players" /></p>
+
+> **Browser demo = local 2-player on one device.** Browsers can't open raw TCP sockets, so the demo can't connect to the game server. Online play (two machines through the server) runs in the desktop Java client. See [Local vs online play](#local-vs-online-play).
+
 <p align="center"><img src="docs/screenshots/board-after-roll.png" width="720" alt="Game board after rolling the dice" /></p>
 
 ## Overview
@@ -29,6 +37,19 @@ Two players on different machines connect to a central server and play a complet
 - **Restart** (both boards reset together), **resign** and **opponent-disconnect** notifications
 - **Image-based board:** 48 pre-rendered triangle images (triangle colour × piece colour × 0–5 pieces × orientation), generated with `Graphics2D`
 - **Configurable connection:** server port and client host/port via command-line options or environment variables
+
+## Local vs online play
+
+| | **Local 2-player** | **Online** |
+|---|---|---|
+| Where | Your browser ([live demo](https://saadosama10.github.io/backgammon-network-project/play/)) or the desktop client's **Local 2-player (same device)** button | Desktop Java client + `GameServer` |
+| Players | Two people taking turns on one device | Two machines, anywhere the server is reachable |
+| Network | None | TCP, port 6000 |
+| How it works | Both players run the real game logic, connected by an in-memory `LocalTransport` that exchanges the same `PLAYER:n` / `MOVE:...` messages; the window shows the board of whoever's turn it is | `GameClient` talks to `GameServer` over a socket (see [Protocol](#protocol)) |
+
+The browser demo is built with [CheerpJ](https://cheerpj.com/) (Java in WebAssembly), which runs the Swing client unchanged in the page. Browsers don't allow raw TCP sockets, so the server can't be reached from there; that is why the demo is local-only. For online play, [run the server and two desktop clients](#how-to-run).
+
+Both modes share one `Transport` interface (`sendMove`, `getPlayerNumber`): `GameClient` is the TCP implementation (unchanged), `LocalTransport` the in-memory one. The rules, dice, turn handling and win dialogs are the same code in both. The one local-mode difference: resigning doesn't exit the program, because both players live in the same JVM.
 
 ## Architecture
 
@@ -142,13 +163,19 @@ Player 1: MOVE:-4:-4:0
 │   │   │   ├── ClientConfig.java   # --host / --port and environment variables
 │   │   │   ├── BoardPanel.java     # Start screen: name + server address
 │   │   │   ├── GamePanel.java      # Board UI, rules, dice, turn handling
-│   │   │   ├── GameClient.java     # Socket connection + listener thread
+│   │   │   ├── GameClient.java     # TCP transport: socket connection + listener thread
+│   │   │   ├── Transport.java      # How a panel sends moves (TCP or in-memory)
+│   │   │   ├── LocalTransport.java # In-memory transport for local 2-player mode
+│   │   │   ├── LocalGame.java      # Local mode: two panels, shows whoever's turn it is
 │   │   │   └── ImageGenerator.java # Dev tool: renders the 48 triangle images
 │   │   ├── game/BackgammonBoard.java  # Board model and core rules
 │   │   └── images/                 # Triangle images loaded at runtime
+│   ├── test/client/                # Automated tests (TCP game, local mode)
+│   ├── run-tests.sh  build-web.sh  # Run the tests / build the browser jar
 │   ├── lib/AbsoluteLayout.jar      # NetBeans layout library (Apache-2.0)
 │   ├── nbproject/  build.xml  manifest.mf
 ├── docs/
+│   ├── play/                       # Browser demo (GitHub Pages): index.html + backgammon.jar
 │   ├── BackgammonReport.pdf        # Course report (personal and server details redacted)
 │   └── screenshots/
 └── README.md
@@ -187,6 +214,24 @@ Enter a name (at least 3 characters), confirm the server address (`localhost` by
 | Client server port | `--port 7000` | `BACKGAMMON_PORT` | `6000` |
 
 The client's `--host` value prefills the "Enter server IP" dialog, which accepts an IPv4 address, `localhost` or a host name.
+
+### Tests
+
+```bash
+cd BackgammonGame
+./run-tests.sh          # TCP game (real server + 2 clients) and local 2-player mode
+```
+
+`TcpGameTest` plays a real game through `GameServer` with two clients and checks both boards stay identical. `LocalModeTest` drives the local mode: moves and turn handover, dice rules (a spent die can't be reused, doubles give four moves), hitting and bar entry, bear-off (exact and higher die), the win dialog, restart and resign. The tests open real Swing windows, so they need a display.
+
+### Browser demo
+
+```bash
+cd BackgammonGame
+./build-web.sh          # compiles with --release 11 (CheerpJ runs Java 8/11/17) -> docs/play/backgammon.jar
+```
+
+`docs/play/` is served by GitHub Pages. To try it locally, serve `docs/` with a web server that supports HTTP `Range` requests (CheerpJ needs them).
 
 ### On AWS EC2
 
