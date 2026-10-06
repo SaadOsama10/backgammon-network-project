@@ -18,7 +18,7 @@ public class GamePanel extends javax.swing.JPanel {
     private int selectedPointIndex = -1;
     private boolean diceRolled = false;
     private int movesLeft = 0;
-    private GameClient gameClient;
+    private Transport gameClient;
     private int myPlayerNumber = 0;
 
     
@@ -857,10 +857,13 @@ if (choice == javax.swing.JOptionPane.YES_OPTION) {
     if (gameClient != null) {
         gameClient.sendMove(-4, -4, 0); // -4 = resign
     }
+    // In local mode both players share this JVM, so only the online client exits after resigning
+    if (gameClient == null || !gameClient.isLocal()) {
     new Thread(() -> {
     try { Thread.sleep(500); } catch (Exception e) {}
     System.exit(0);
 }).start();
+    }
 }
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -1464,8 +1467,13 @@ if (choice == javax.swing.JOptionPane.YES_OPTION) {
      * Sets the GameClient instance used to send moves over the network.
      * @param client the connected GameClient
      */
-    public void setGameClient(GameClient client) {
+    public void setGameClient(Transport client) {
         this.gameClient = client;
+    }
+
+    /** Whose turn it is on this board (1 = White, 2 = Black). */
+    public int getCurrentPlayer() {
+        return board.getCurrentPlayer();
     }
     
     private javax.swing.JLabel getPointLabel(int index) {

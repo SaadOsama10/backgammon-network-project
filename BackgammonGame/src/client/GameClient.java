@@ -7,7 +7,7 @@ import java.net.*;
  * Connects to the GameServer using the server IP and port 6000.
  * Sends moves to the server and receives opponent moves in a background thread.
  */
-public class GameClient {
+public class GameClient implements Transport {
     
     private Socket socket;
     private PrintWriter out;      // output stream to send messages to server
@@ -87,6 +87,7 @@ public class GameClient {
      * @param to destination point index (0-23)
      * @param movesLeft number of moves remaining after this move
      */
+    @Override
     public void sendMove(int from, int to, int movesLeft) {
         out.println("MOVE:" + from + ":" + to + ":" + movesLeft);
     }
@@ -94,6 +95,7 @@ public class GameClient {
     /**
      * Returns the player number assigned by the server (1 or 2)
      */
+    @Override
     public int getPlayerNumber() {
         return playerNumber;
     }
