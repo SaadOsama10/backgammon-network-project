@@ -33,7 +33,7 @@ public class BoardPanel extends javax.swing.JPanel {
                 LocalGame.start(frame);
             }
         });
-        add(localButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(397, 450, 206, 40));
+        add(localButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 450, 300, 40));
     }
 
     /**

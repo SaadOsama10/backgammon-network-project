@@ -19,3 +19,6 @@ dist/
 *.key
 *.ppk
 .env
+
+# The browser demo jar is served by GitHub Pages
+!docs/play/*.jar
