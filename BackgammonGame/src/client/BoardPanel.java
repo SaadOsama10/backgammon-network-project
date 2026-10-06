@@ -15,6 +15,25 @@ public class BoardPanel extends javax.swing.JPanel {
      */
     public BoardPanel() {
         initComponents();
+        addLocalModeButton();
+    }
+
+    /**
+     * Adds the "Local 2-player" option below Start Game (kept outside the generated code
+     * so the NetBeans form editor doesn't drop it). Both players share this device and window.
+     */
+    private void addLocalModeButton() {
+        javax.swing.JButton localButton = new javax.swing.JButton("Local 2-player (same device)");
+        localButton.setBackground(new java.awt.Color(255, 255, 255));
+        localButton.setFont(new java.awt.Font("Arial", 1, 14));
+        localButton.setForeground(new java.awt.Color(0, 0, 0));
+        localButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                javax.swing.JFrame frame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(BoardPanel.this);
+                LocalGame.start(frame);
+            }
+        });
+        add(localButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(397, 450, 206, 40));
     }
 
     /**
